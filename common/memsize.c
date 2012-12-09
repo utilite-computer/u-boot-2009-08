@@ -22,6 +22,9 @@
  */
 
 #include <config.h>
+#include <common.h>
+#include <command.h>
+
 #ifdef __PPC__
 /*
  * At least on G2 PowerPC cores, sequential accesses to non-existent
@@ -37,13 +40,13 @@
  * the actually available RAM size between addresses `base' and
  * `base + maxsize'.
  */
-long get_ram_size(volatile long *base, long maxsize)
+unsigned long get_ram_size(unsigned long *base, unsigned long maxsize)
 {
-	volatile long *addr;
-	long           save[32];
-	long           cnt;
-	long           val;
-	long           size;
+	volatile unsigned long *addr;
+	unsigned long           save[32];
+	unsigned long           cnt;
+	unsigned long           val;
+	unsigned long           size;
 	int            i = 0;
 
 	for (cnt = (maxsize / sizeof (long)) >> 1; cnt > 0; cnt >>= 1) {
@@ -92,3 +95,27 @@ long get_ram_size(volatile long *base, long maxsize)
 
 	return (maxsize);
 }
+
+int do_check_memsize(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
+{
+	u32 base, maxsize, size;
+
+	if (argc < 3) {
+		cmd_usage(cmdtp);
+		return 1;
+	}
+
+	base = simple_strtoul(argv[1], NULL, 16);
+	maxsize = simple_strtoul(argv[2], NULL, 16);
+
+	size = get_ram_size((unsigned long *)base, maxsize);
+	printf("Found %uMB (%u bytes) of memory\n", size >> 20, size);
+
+	return 0;
+}
+
+U_BOOT_CMD(
+	memsize,	3,	0,	do_check_memsize,
+	"check the memory size",
+	"<base address> <max size>"
+);
