@@ -201,22 +201,12 @@ static int display_dram_config (void)
 {
 	int i;
 
-#ifdef DEBUG
 	puts ("RAM Configuration:\n");
 
 	for(i=0; i<CONFIG_NR_DRAM_BANKS; i++) {
 		printf ("Bank #%d: %08lx ", i, gd->bd->bi_dram[i].start);
 		print_size (gd->bd->bi_dram[i].size, "\n");
 	}
-#else
-	ulong size = 0;
-
-	for (i=0; i<CONFIG_NR_DRAM_BANKS; i++) {
-		size += gd->bd->bi_dram[i].size;
-	}
-	puts("DRAM:  ");
-	print_size(size, "\n");
-#endif
 
 	return (0);
 }
