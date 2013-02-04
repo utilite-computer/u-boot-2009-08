@@ -3259,6 +3259,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_MX6Q_ARM2            3837
 #define MACH_TYPE_MX6Q_SABRESD	       3980
 #define MACH_TYPE_MX6SL_ARM2           4091
+#define MACH_TYPE_CM_FX6               4273
 #define MACH_TYPE_MX6SL_EVK            4307
 
 #ifdef CONFIG_ARCH_EBSA110
@@ -42199,6 +42200,18 @@ extern unsigned int __machine_arch_type;
 # define machine_is_mx6q_sabresd() (machine_arch_type == MACH_TYPE_MX6Q_SABRESD)
 #else
 # define machine_is_mx6q_sabresd()	(0)
+#endif
+
+#ifdef CONFIG_MACH_CM_FX6
+# ifdef machine_arch_type
+#  undef machine_arch_type
+#  define machine_arch_type	__machine_arch_type
+# else
+#  define machine_arch_type	MACH_TYPE_CM_FX6
+# endif
+# define machine_is_cm_fx6() (machine_arch_type == MACH_TYPE_CM_FX6)
+#else
+# define machine_is_cm_fx6()	(0)
 #endif
 
 #ifdef CONFIG_MACH_MX6SL_EVK
