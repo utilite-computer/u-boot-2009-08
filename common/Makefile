@@ -47,6 +47,7 @@ COBJS-y += xyzModem.o
 COBJS-y += cmd_boot.o
 COBJS-y += cmd_bootm.o
 COBJS-y += cmd_nvedit.o
+COBJS-y += machtype.o
 
 # environment
 COBJS-y += env_common.o
