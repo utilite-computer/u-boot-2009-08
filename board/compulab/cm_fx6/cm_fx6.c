@@ -374,17 +374,17 @@ static void setup_i2c(unsigned int module_base)
 		break;
 	case I2C3_BASE_ADDR:
 	#if defined CONFIG_MX6Q
-		/* GPIO_5 for I2C3_SCL */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_5__I2C3_SCL);
+		/* GPIO_3 for I2C3_SCL */
+		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_3__I2C3_SCL);
 
-		/* GPIO_16 for I2C3_SDA */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_16__I2C3_SDA);
+		/* GPIO_6 for I2C3_SDA */
+		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_6__I2C3_SDA);
 	#elif defined CONFIG_MX6DL
-		/* GPIO_5 for I2C3_SCL */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_GPIO_5__I2C3_SCL);
+		/* GPIO_3 for I2C3_SCL */
+		mxc_iomux_v3_setup_pad(MX6DL_PAD_GPIO_3__I2C3_SCL);
 
-		/* GPIO_16 for I2C3_SDA */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_GPIO_16__I2C3_SDA);
+		/* GPIO_6 for I2C3_SDA */
+		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_6__I2C3_SDA);
 	#endif
 
 		/* Enable i2c clock */
