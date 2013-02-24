@@ -933,6 +933,8 @@ static inline int read_cpu_temperature(void)
 
 static void check_cpu_temperature(void)
 {
+	char *temp_warn = ", temperature out of bounds!";
+
 	cpu_tmp = read_cpu_temperature();
 	while (cpu_tmp > TEMPERATURE_MIN && cpu_tmp < TEMPERATURE_MAX) {
 		if (cpu_tmp >= TEMPERATURE_HOT) {
@@ -944,10 +946,10 @@ static void check_cpu_temperature(void)
 			break;
 	}
 	if (cpu_tmp > TEMPERATURE_MIN && cpu_tmp < TEMPERATURE_MAX)
-		printf("Temperature:   %d C, calibration data 0x%x\n",
-			cpu_tmp, fuse);
-	else
-		printf("Temperature:   can't get valid data!\n");
+		temp_warn = "";
+
+	printf("Temperature:   %d C, calibration data 0x%x%s\n",
+	       cpu_tmp, fuse, temp_warn);
 }
 
 #if defined(CONFIG_DISPLAY_CPUINFO)
