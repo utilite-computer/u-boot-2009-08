@@ -102,8 +102,8 @@ enum pll_clocks {
 
 #define OCOTP_THERMAL_OFFSET	0x4E0
 #define TEMPERATURE_MIN			-40
-#define TEMPERATURE_HOT			80
 #define TEMPERATURE_MAX			125
+#define TEMPERATURE_HOT			TEMPERATURE_MAX
 #define REG_VALUE_TO_CEL(ratio, raw) ((raw_n40c - raw) * 100 / ratio - 40)
 static int cpu_tmp;
 static unsigned int fuse;
