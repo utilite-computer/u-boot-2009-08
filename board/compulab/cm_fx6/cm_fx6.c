@@ -633,18 +633,6 @@ iomux_v3_cfg_t usdhc3_pads[] = {
 	MX6Q_PAD_GPIO_18__USDHC3_VSELECT,
 };
 
-iomux_v3_cfg_t usdhc4_pads[] = {
-	MX6Q_PAD_SD4_CLK__USDHC4_CLK,
-	MX6Q_PAD_SD4_CMD__USDHC4_CMD,
-	MX6Q_PAD_SD4_DAT0__USDHC4_DAT0,
-	MX6Q_PAD_SD4_DAT1__USDHC4_DAT1,
-	MX6Q_PAD_SD4_DAT2__USDHC4_DAT2,
-	MX6Q_PAD_SD4_DAT3__USDHC4_DAT3,
-	MX6Q_PAD_SD4_DAT4__USDHC4_DAT4,
-	MX6Q_PAD_SD4_DAT5__USDHC4_DAT5,
-	MX6Q_PAD_SD4_DAT6__USDHC4_DAT6,
-	MX6Q_PAD_SD4_DAT7__USDHC4_DAT7,
-};
 #elif defined CONFIG_MX6DL
 iomux_v3_cfg_t usdhc1_pads[] = {
 	MX6DL_PAD_SD1_CLK__USDHC1_CLK,
@@ -677,27 +665,13 @@ iomux_v3_cfg_t usdhc3_pads[] = {
 	MX6DL_PAD_SD3_DAT7__USDHC3_DAT7,
 	MX6DL_PAD_GPIO_18__USDHC3_VSELECT,
 };
-
-iomux_v3_cfg_t usdhc4_pads[] = {
-	MX6DL_PAD_SD4_CLK__USDHC4_CLK,
-	MX6DL_PAD_SD4_CMD__USDHC4_CMD,
-	MX6DL_PAD_SD4_DAT0__USDHC4_DAT0,
-	MX6DL_PAD_SD4_DAT1__USDHC4_DAT1,
-	MX6DL_PAD_SD4_DAT2__USDHC4_DAT2,
-	MX6DL_PAD_SD4_DAT3__USDHC4_DAT3,
-	MX6DL_PAD_SD4_DAT4__USDHC4_DAT4,
-	MX6DL_PAD_SD4_DAT5__USDHC4_DAT5,
-	MX6DL_PAD_SD4_DAT6__USDHC4_DAT6,
-	MX6DL_PAD_SD4_DAT7__USDHC4_DAT7,
-};
 #endif
 int usdhc_gpio_init(bd_t *bis)
 {
 	s32 status = 0;
 	u32 index = 0;
 
-	for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM;
-		++index) {
+	for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM; ++index) {
 		switch (index) {
 		case 0:
 			mxc_iomux_v3_setup_multiple_pads(usdhc1_pads,
@@ -710,10 +684,6 @@ int usdhc_gpio_init(bd_t *bis)
 		case 2:
 			mxc_iomux_v3_setup_multiple_pads(usdhc3_pads,
 						ARRAY_SIZE(usdhc3_pads));
-			break;
-		case 3:
-			mxc_iomux_v3_setup_multiple_pads(usdhc4_pads,
-						ARRAY_SIZE(usdhc4_pads));
 			break;
 		default:
 			printf("Warning: you configured more USDHC controllers"
