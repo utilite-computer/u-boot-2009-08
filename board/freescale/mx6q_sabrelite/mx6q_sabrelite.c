@@ -27,7 +27,7 @@
 #include <asm/arch/iomux-v3.h>
 #include <asm/errno.h>
 #include <miiphy.h>
-#if CONFIG_I2C_MXC
+#ifdef CONFIG_I2C_MXC
 #include <i2c.h>
 #endif
 

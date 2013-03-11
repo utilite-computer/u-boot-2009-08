@@ -39,7 +39,7 @@
 #include <imx_spi.h>
 #include <netdev.h>
 
-#if CONFIG_I2C_MXC
+#ifdef CONFIG_I2C_MXC
 #include <i2c.h>
 #endif
 
