@@ -2483,7 +2483,7 @@ char *strim(char *s)
 	return skip_spaces(s);
 }
 /* Sanitize ONFI strings so we can safely print them */
-static void sanitize_string(uint8_t *s, size_t len)
+static void sanitize_string(char *s, size_t len)
 {
 	ssize_t i;
 
