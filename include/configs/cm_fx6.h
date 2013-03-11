@@ -228,12 +228,8 @@
 	#define CONFIG_SYS_FSL_USDHC_NUM	4
 	#define CONFIG_SYS_FSL_ESDHC_ADDR	0
 	#define CONFIG_SYS_MMC_ENV_DEV		2
-
 	/* detect whether SD1, 2, 3, or 4 is boot device */
 	#define CONFIG_DYNAMIC_MMC_DEVNO
-
-	/* SD3 and SD4 are 8 bit */
-	#define CONFIG_MMC_8BIT_PORTS	0xC
 #endif
 
 /*
