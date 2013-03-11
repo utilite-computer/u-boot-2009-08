@@ -539,14 +539,13 @@ iomux_v3_cfg_t nfc_pads[] = {
 };
 #endif
 
-int setup_gpmi_nand(void)
+static void setup_gpmi_nand(void)
 {
 	unsigned int reg;
 
 	/* config gpmi nand iomux */
 	mxc_iomux_v3_setup_multiple_pads(nfc_pads,
 			ARRAY_SIZE(nfc_pads));
-
 
 	/* config gpmi and bch clock to 11Mhz*/
 	reg = readl(CCM_BASE_ADDR + CLKCTL_CS2CDR);
@@ -563,7 +562,6 @@ int setup_gpmi_nand(void)
 	reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR0);
 	reg |= 0x0030;
 	writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR0);
-
 }
 #endif
 
