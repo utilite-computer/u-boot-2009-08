@@ -1,7 +1,8 @@
 /*
- * Copyright (C) 2010-2012 Freescale Semiconductor, Inc.
+ * Copyright (C) 2013 CompuLab, Ltd.
+ * Author: Igor Grinberg <grinberg@compulab.co.il>
  *
- * Configuration settings for the MX6Q Armadillo2 Freescale board.
+ * Configuration settings for the CompuLab CM-FX6 board.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -15,8 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc.
  */
 
 #ifndef __CONFIG_H
