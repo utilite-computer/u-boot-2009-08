@@ -3113,7 +3113,16 @@ omap3_zoom1_config :	unconfig
 omap3_zoom2_config :	unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 zoom2 omap3 omap3
 
-cm_fx6_config :		unconfig
+cm_fx6_256mb_config :		unconfig
+	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
+
+cm_fx6_1gb_config :		unconfig
+	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
+
+cm_fx6_2gb_config :		unconfig
+	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
+
+cm_fx6_4gb_config :		unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
 
 #########################################################################

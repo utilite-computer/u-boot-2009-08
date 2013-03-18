@@ -277,16 +277,8 @@
 /*-----------------------------------------------------------------------
  * Physical Memory Map
  */
-//#define CONFIG_DDR_16BIT
-//#define CONFIG_DDR_64BIT_4GB
-#define CONFIG_NR_DRAM_BANKS	1
 #define PHYS_SDRAM_1		CSD0_DDR_BASE_ADDR
-//#define PHYS_SDRAM_1_SIZE	(256 << 20)	/* 256MB */
-//#define PHYS_SDRAM_1_SIZE	(512 << 20)	/* 512MB */
-#define PHYS_SDRAM_1_SIZE	(1 << 30)	/* 1GB */
-//#define PHYS_SDRAM_1_SIZE	0xEFF00000	/* 3839MB */
 #define PHYS_SDRAM_2		CSD1_DDR_BASE_ADDR
-#define PHYS_SDRAM_2_SIZE	(1 << 30)	/* 1GB */
 
 #define iomem_valid_addr(addr, size) \
  ((addr >= PHYS_SDRAM_1 && addr <= (PHYS_SDRAM_1 + PHYS_SDRAM_1_SIZE)) || \
