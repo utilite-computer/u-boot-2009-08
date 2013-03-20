@@ -119,24 +119,53 @@
 #define CONFIG_LOADADDR		0x10800000	/* loadaddr env var */
 #define CONFIG_RD_LOADADDR	0x11000000
 
-#define	CONFIG_EXTRA_ENV_SETTINGS					\
-		"netdev=eth0\0"						\
-		"ethprime=FEC0\0"					\
-		"uboot=u-boot.bin\0"					\
-		"kernel=uImage\0"					\
-		"nfsroot=/opt/eldk/arm\0"				\
-		"bootargs_base=setenv bootargs console=ttymxc3,115200\0"\
-		"bootargs_nfs=setenv bootargs ${bootargs} root=/dev/nfs "\
-			"ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0"\
-		"bootcmd_net=run bootargs_base bootargs_nfs; "		\
-			"tftpboot ${loadaddr} ${kernel}; bootm\0"	\
-		"bootargs_mmc=setenv bootargs ${bootargs} ip=dhcp "	\
-			"root=/dev/mmcblk0p1 rootwait\0"		\
-		"bootcmd_mmc=run bootargs_base bootargs_mmc; "		\
-		"mmc dev 3; "						\
-		"mmc read ${loadaddr} 0x800 0x2000; bootm\0"		\
-		"bootcmd=run bootcmd_net\0"				\
+#define	CONFIG_EXTRA_ENV_SETTINGS \
+	"autoload=no\0" \
+	"loadaddr=0x10800000\0" \
+	"console=ttymxc3,115200\0" \
+	"ethprime=FEC0\0" \
+	"kernel=uImage\0" \
+	"bootscr=boot.scr\0" \
+	"video_hdmi=mxcfb0:dev=hdmi,1280x720-24M@50,if=RGB24\0" \
+	"video_dvi=mxcfb0:dev=dvi,1280x800-24M@50,if=RGB24\0" \
+	"mmcdev=2\0" \
+	"mmcroot=/dev/mmcblk0p2 rw rootwait\0" \
+	"nandroot=/dev/mtdblock4 rw\0" \
+	"nandrootfstype=ubifs\0" \
+	"mmcargs=setenv bootargs console=${console} " \
+		"root=${mmcroot} " \
+		"${video}\0" \
+	"nandargs=setenv bootargs console=${console} " \
+		"root=${nandroot} " \
+		"rootfstype=${nandrootfstype} " \
+		"${video}\0" \
+	"loadbootscript=fatload mmc ${mmcdev} ${loadaddr} ${bootscr}\0" \
+	"bootscript=echo Running bootscript from mmc ...; " \
+		"source ${loadaddr}\0" \
+	"loadkernel=fatload mmc ${mmcdev} ${loadaddr} ${kernel}\0" \
+	"mmcboot=echo Booting from mmc ...; " \
+		"run mmcargs; " \
+		"bootm ${loadaddr}\0" \
+	"nandboot=echo Booting from nand ...; " \
+		"run nandargs; " \
+		"nand read ${loadaddr} 0 400000; " \
+		"bootm ${loadaddr}\0" \
 
+
+#define CONFIG_BOOTCOMMAND \
+        "mmc dev ${mmcdev}; " \
+	"if mmc rescan; then " \
+		"if run loadbootscript; then " \
+			"run bootscript; " \
+		"else " \
+			"if run loadkernel; then " \
+				"run mmcboot; " \
+			"else run nandboot; " \
+			"fi; " \
+		"fi; " \
+	"else " \
+		"run nandboot; " \
+	"fi"
 
 #define CONFIG_ARP_TIMEOUT	200UL
 
