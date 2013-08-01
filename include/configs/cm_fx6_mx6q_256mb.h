@@ -19,6 +19,7 @@
  * Foundation, Inc.
  */
 
+#define CONFIG_MX6Q
 #define CONFIG_DDR_16BIT
 #define CONFIG_NR_DRAM_BANKS	1
 #define PHYS_SDRAM_1_SIZE	(256 << 20)	/* 256MB */

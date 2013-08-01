@@ -27,7 +27,6 @@
  /* High Level Configuration Options */
 #define CONFIG_ARMV7	/* This is armv7 Cortex-A9 CPU core */
 #define CONFIG_MXC
-#define CONFIG_MX6Q
 #define CONFIG_CM_FX6
 #define CONFIG_FLASH_HEADER
 #define CONFIG_FLASH_HEADER_OFFSET 0x400

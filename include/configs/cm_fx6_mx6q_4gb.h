@@ -19,7 +19,10 @@
  * Foundation, Inc.
  */
 
-#define CONFIG_NR_DRAM_BANKS	1
-#define PHYS_SDRAM_1_SIZE	(1 << 30)	/* 1GB */
+#define CONFIG_MX6Q
+#define CONFIG_DDR_64BIT_4GB
+#define CONFIG_NR_DRAM_BANKS	2
+#define PHYS_SDRAM_1_SIZE	0x70000000	/* 1792MB */
+#define PHYS_SDRAM_2_SIZE	0x7FF00000	/* 2047MB */
 
 #include "cm_fx6.h"
