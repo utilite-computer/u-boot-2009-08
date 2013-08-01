@@ -269,16 +269,16 @@ int setup_sata(void)
 	reg &= ~0x07ffffff;
 	/*
 	 * rx_eq_val_0 = 5 [26:24]
-	 * los_lvl = 0x12 [23:19]
+	 * rx_los_lvl = 0x12 [23:19]
 	 * rx_dpll_mode_0 = 0x3 [18:16]
+	 * sata_speed = 0x0 [15]
 	 * mpll_ss_en = 0x0 [14]
 	 * tx_atten_0 = 0x4 [13:11]
 	 * tx_boost_0 = 0x0 [10:7]
 	 * tx_lvl = 0x11 [6:2]
-	 * mpll_ck_off_b = 0x1 [1]
-	 * tx_edgerate_0 = 0x0 [0]
+	 * tx_edgerate_0 = 0x2 [1:0]
 	 * */
-	reg |= 0x59124c6;
+	reg |= 0x5932046;
 	writel(reg, IOMUXC_BASE_ADDR + 0x34);
 
 	return 0;
