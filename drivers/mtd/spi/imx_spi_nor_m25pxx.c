@@ -60,6 +60,14 @@ to_imx_spi_flash(struct spi_flash *flash)
 
 static const struct imx_spi_flash_params imx_spi_flash_table[] = {
 	{
+		.idcode1		= 0x71,
+		.block_size		= SZ_64K,
+		.block_count		= 32,
+		.device_size		= SZ_64K * 32,
+		.page_size		= 256,
+		.name			= "M25P16 - 2MB",
+	},
+	{
 		.idcode1		= 0x20,
 		.block_size		= SZ_64K,
 		.block_count		= 64,
