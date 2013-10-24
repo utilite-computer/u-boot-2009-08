@@ -314,7 +314,8 @@ int boot_relocate_fdt (struct lmb *lmb, ulong bootmap_base,
 		char **of_flat_tree, ulong *of_size);
 #endif
 
-#if defined(CONFIG_PPC) || defined(CONFIG_M68K)
+#if defined(CONFIG_PPC) || defined(CONFIG_M68K) || defined(CONFIG_SPARC) || \
+	defined(CONFIG_ARM)
 int boot_ramdisk_high (struct lmb *lmb, ulong rd_data, ulong rd_len,
 		  ulong *initrd_start, ulong *initrd_end);
 
