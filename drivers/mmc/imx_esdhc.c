@@ -695,6 +695,7 @@ int fsl_esdhc_mmc_init(bd_t *bis)
 }
 
 #ifdef CONFIG_OF_LIBFDT
+#ifndef CONFIG_ARM
 void fdt_fixup_esdhc(void *blob, bd_t *bd)
 {
 	const char *compat = "fsl,esdhc";
@@ -711,4 +712,5 @@ out:
 	do_fixup_by_compat(blob, compat, "status", status,
 			   strlen(status) + 1, 1);
 }
+#endif
 #endif
