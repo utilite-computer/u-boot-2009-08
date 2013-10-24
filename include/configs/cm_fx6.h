@@ -52,12 +52,19 @@
 #define CONFIG_REVISION_TAG
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_INITRD_TAG
+#define CONFIG_OF_LIBFDT
 
 #define CONFIG_MXC_GPIO
 /*
  * Size of malloc() pool
  */
 #define CONFIG_SYS_MALLOC_LEN		(2 * 1024 * 1024)
+/*
+ * For booting Linux, the board info and command line data
+ * have to be in the first 16 MB of memory, since this is
+ * the maximum mapped by the 40x Linux kernel during initialization.
+ */
+#define CONFIG_SYS_BOOTMAPSZ		(8 << 20) /* Initial Memory map for Linux */
 /* size in bytes reserved for initial data */
 #define CONFIG_SYS_GBL_DATA_SIZE	128
 
