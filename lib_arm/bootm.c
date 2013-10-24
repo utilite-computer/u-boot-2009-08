@@ -27,6 +27,7 @@
 #include <image.h>
 #include <u-boot/zlib.h>
 #include <asm/byteorder.h>
+#include <fdt_support.h>
 
 #include <bootimg.h>
 
@@ -59,6 +60,38 @@ static void setup_videolfb_tag (gd_t *gd);
 static struct tag *params;
 #endif /* CONFIG_SETUP_MEMORY_TAGS || CONFIG_CMDLINE_TAG || CONFIG_INITRD_TAG */
 
+#ifdef CONFIG_OF_LIBFDT
+static int create_fdt(bootm_headers_t *images)
+{
+	ulong of_size = images->ft_len;
+	char **of_flat_tree = &images->ft_addr;
+	ulong *initrd_start = &images->initrd_start;
+	ulong *initrd_end = &images->initrd_end;
+	struct lmb *lmb = &images->lmb;
+	ulong rd_len;
+	int ret;
+	ulong bootmap_base = getenv_bootm_low();
+
+	debug("using: FDT\n");
+
+	rd_len = images->rd_end - images->rd_start;
+	ret = boot_ramdisk_high(lmb, images->rd_start, rd_len,
+							initrd_start, initrd_end);
+	if (ret)
+		return ret;
+
+	ret = boot_relocate_fdt(lmb, bootmap_base, of_flat_tree, &of_size);
+	if (ret)
+		return ret;
+
+	fdt_chosen(*of_flat_tree, 1);
+	fdt_fixup_ethernet(*of_flat_tree);
+	fdt_initrd(*of_flat_tree, *initrd_start, *initrd_end, 1);
+
+	return 0;
+}
+#endif
+
 int do_bootm_linux(int flag, int argc, char *argv[], bootm_headers_t *images)
 {
 	bd_t	*bd = gd->bd;
@@ -86,35 +119,46 @@ int do_bootm_linux(int flag, int argc, char *argv[], bootm_headers_t *images)
 	debug ("## Transferring control to Linux (at address %08lx) ...\n",
 	       (ulong) theKernel);
 
-#if defined (CONFIG_SETUP_MEMORY_TAGS) || \
-    defined (CONFIG_CMDLINE_TAG) || \
-    defined (CONFIG_INITRD_TAG) || \
-    defined (CONFIG_SERIAL_TAG) || \
-    defined (CONFIG_REVISION_TAG) || \
-    defined (CONFIG_LCD) || \
-    defined (CONFIG_VFD)
-	setup_start_tag (bd);
-#ifdef CONFIG_SERIAL_TAG
-	setup_serial_tag (&params);
+#ifdef CONFIG_OF_LIBFDT
+	if (images->ft_len) {
+		debug("using: FDT\n");
+		if (create_fdt(images)) {
+			printf("FDT creation failed! hanging...");
+			hang();
+		}
+	} else
 #endif
-#ifdef CONFIG_REVISION_TAG
-	setup_revision_tag (&params);
-#endif
-#ifdef CONFIG_SETUP_MEMORY_TAGS
-	setup_memory_tags (bd);
-#endif
-#ifdef CONFIG_CMDLINE_TAG
-	setup_commandline_tag (bd, commandline);
-#endif
-#ifdef CONFIG_INITRD_TAG
-	if (images->rd_start && images->rd_end)
-		setup_initrd_tag (bd, images->rd_start, images->rd_end);
-#endif
-#if defined (CONFIG_VFD) || defined (CONFIG_LCD)
-	setup_videolfb_tag ((gd_t *) gd);
-#endif
-	setup_end_tag (bd);
-#endif
+	{
+	#if defined (CONFIG_SETUP_MEMORY_TAGS) || \
+		defined (CONFIG_CMDLINE_TAG) || \
+		defined (CONFIG_INITRD_TAG) || \
+		defined (CONFIG_SERIAL_TAG) || \
+		defined (CONFIG_REVISION_TAG) || \
+		defined (CONFIG_LCD) || \
+		defined (CONFIG_VFD)
+		setup_start_tag (bd);
+	#ifdef CONFIG_SERIAL_TAG
+		setup_serial_tag (&params);
+	#endif
+	#ifdef CONFIG_REVISION_TAG
+		setup_revision_tag (&params);
+	#endif
+	#ifdef CONFIG_SETUP_MEMORY_TAGS
+		setup_memory_tags (bd);
+	#endif
+	#ifdef CONFIG_CMDLINE_TAG
+		setup_commandline_tag (bd, commandline);
+	#endif
+	#ifdef CONFIG_INITRD_TAG
+		if (images->rd_start && images->rd_end)
+			setup_initrd_tag (bd, images->rd_start, images->rd_end);
+	#endif
+	#if defined (CONFIG_VFD) || defined (CONFIG_LCD)
+		setup_videolfb_tag ((gd_t *) gd);
+	#endif
+		setup_end_tag (bd);
+	#endif
+	}
 
 	/* we assume that the kernel is in place */
 	printf ("\nStarting kernel ...\n\n");
@@ -128,6 +172,11 @@ int do_bootm_linux(int flag, int argc, char *argv[], bootm_headers_t *images)
 
 	cleanup_before_linux ();
 
+#ifdef CONFIG_OF_LIBFDT
+	if (images->ft_len)
+		theKernel (0, machid, (unsigned long) images->ft_addr);
+	else
+#endif
 	theKernel (0, machid, bd->bi_boot_params);
 	/* does not return */
 
@@ -343,3 +392,31 @@ static void setup_end_tag (bd_t *bd)
 
 #endif /* CONFIG_SETUP_MEMORY_TAGS || CONFIG_CMDLINE_TAG || CONFIG_INITRD_TAG */
 
+#ifdef CONFIG_CMD_BOOTZ
+struct zimage_header {
+	uint32_t	code[9];
+	uint32_t	zi_magic;
+	uint32_t	zi_start;
+	uint32_t	zi_end;
+};
+
+#define LINUX_ARM_ZIMAGE_MAGIC 0x016f2818
+
+int bootz_setup(void *image, void **start, void **end)
+{
+	struct zimage_header *zi = (struct zimage_header *)image;
+
+	if (zi->zi_magic != LINUX_ARM_ZIMAGE_MAGIC) {
+		debug("Bad Linux ARM zImage magic!\n");
+		return 1;
+	}
+
+	*start = (void *)zi->zi_start;
+	*end = (void *)zi->zi_end;
+
+	debug("Kernel image @ 0x%08x [ 0x%08x - 0x%08x ]\n",
+		  (uint32_t)image, (uint32_t)*start, (uint32_t)*end);
+
+	return 0;
+}
+#endif  /* CONFIG_CMD_BOOTZ */
