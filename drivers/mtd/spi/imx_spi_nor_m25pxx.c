@@ -39,7 +39,7 @@ static u8 g_rx_buf[256];
 #define	SPI_FIFOSIZE		24
 
 struct imx_spi_flash_params {
-	u32		idcode1;
+	u8		idcode1;
 	u32		block_size;
 	u32		block_count;
 	u32		device_size;
