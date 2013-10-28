@@ -35,7 +35,7 @@
 
 #define	SPI_FIFOSIZE		24
 
-static const struct imx_spi_flash_params imx_spi_flash_table[] = {
+static const struct imx_spi_flash_params imx_spi_flash_m25pxx_table[] = {
 	{
 		.idcode1		= 0x71,
 		.block_size		= SZ_64K,
@@ -118,8 +118,8 @@ static int erase_sector(struct spi_flash *flash, u32 offset)
 	return 0;
 }
 
-static int spi_nor_flash_read(struct spi_flash *flash, u32 from,
-		size_t len, void *buf)
+static int m25pxx_flash_read(struct spi_flash *flash, u32 from,
+			     size_t len, void *buf)
 {
 	struct imx_spi_flash *imx_sf = to_imx_spi_flash(flash);
 	int rx_len = 0, count = 0, i = 0;
@@ -298,8 +298,8 @@ static int _fsl_spi_write(struct spi_flash *flash, const void *buf, int len, int
 	return len;
 }
 
-static int spi_nor_flash_write(struct spi_flash *flash, u32 to,
-		size_t len, const void *buf)
+static int m25pxx_flash_write(struct spi_flash *flash, u32 to,
+			      size_t len, const void *buf)
 {
 	struct imx_spi_flash *imx_sf = to_imx_spi_flash(flash);
 	u32 page_offset, page_size;
@@ -352,8 +352,7 @@ static int spi_nor_flash_write(struct spi_flash *flash, u32 to,
 	return 0;
 }
 
-static int spi_nor_flash_erase(struct spi_flash *flash, u32 offset,
-		size_t len)
+static int m25pxx_flash_erase(struct spi_flash *flash, u32 offset, size_t len)
 {
 	struct imx_spi_flash *imx_sf = to_imx_spi_flash(flash);
 
@@ -384,59 +383,20 @@ static int spi_nor_flash_erase(struct spi_flash *flash, u32 offset,
 	return 0;
 }
 
-struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs, unsigned int max_hz, unsigned int spi_mode)
+int spi_flash_probe_m25pxx(struct imx_spi_flash *imx_sf, u8 *idcode)
 {
-	struct spi_slave *spi = NULL;
-	const struct imx_spi_flash_params *params = NULL;
-	struct imx_spi_flash *imx_sf = NULL;
-	u8  idcode[4] = { 0 };
-	u32 i = 0;
-	s32 ret = 0;
+	int i;
+	const struct imx_spi_flash_params *params;
 
-	if (CONFIG_SPI_FLASH_CS != cs) {
-		printf("Invalid cs for SPI NOR.\n");
-		return NULL;
-	}
-
-	spi = spi_setup_slave(bus, cs, max_hz, spi_mode);
-
-	if (!spi) {
-		debug("SF: Failed to set up slave\n");
-		return NULL;
-	}
-
-	ret = spi_claim_bus(spi);
-	if (ret) {
-		debug("SF: Failed to claim SPI bus: %d\n", ret);
-		goto err_claim_bus;
-	}
-
-	imx_sf = (struct imx_spi_flash *)malloc(sizeof(struct imx_spi_flash));
-
-	if (!imx_sf) {
-		debug("SF: Failed to allocate memory\n");
-		spi_free_slave(spi);
-		return NULL;
-	}
-
-	imx_sf->flash.spi = spi;
-
-	/* Read the ID codes */
-	ret = spi_nor_flash_query(&(imx_sf->flash), idcode);
-	if (ret)
-		goto err_read_id;
-
-	for (i = 0; i < ARRAY_SIZE(imx_spi_flash_table); ++i) {
-		params = &imx_spi_flash_table[i];
+	for (i = 0; i < ARRAY_SIZE(imx_spi_flash_m25pxx_table); ++i) {
+		params = &imx_spi_flash_m25pxx_table[i];
 		if (params->idcode1 == idcode[1])
 			break;
 	}
 
-	if (i == ARRAY_SIZE(imx_spi_flash_table)) {
-		debug("SF: Unsupported DataFlash ID %02x\n",
-				idcode[1]);
-
-		goto err_invalid_dev;
+	if (i == ARRAY_SIZE(imx_spi_flash_m25pxx_table)) {
+		printf("SF: Unsupported SPI flash ID %02x\n", idcode[1]);
+		return -1;
 	}
 
 	imx_sf->params = params;
@@ -444,27 +404,9 @@ struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs, unsigned in
 	imx_sf->flash.name = params->name;
 	imx_sf->flash.size = params->device_size;
 
-	imx_sf->flash.read  = spi_nor_flash_read;
-	imx_sf->flash.write = spi_nor_flash_write;
-	imx_sf->flash.erase = spi_nor_flash_erase;
+	imx_sf->flash.read  = m25pxx_flash_read;
+	imx_sf->flash.write = m25pxx_flash_write;
+	imx_sf->flash.erase = m25pxx_flash_erase;
 
-	debug("SF: Detected %s with block size %lu, "
-			"block count %lu, total %u bytes\n",
-			params->name,
-			params->block_size,
-			params->block_count,
-			params->device_size);
-
-	return &(imx_sf->flash);
-
-err_read_id:
-	spi_release_bus(spi);
-err_invalid_dev:
-	if (imx_sf)
-		free(imx_sf);
-err_claim_bus:
-	if (spi)
-		spi_free_slave(spi);
-	return NULL;
+	return 0;
 }
-

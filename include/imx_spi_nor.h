@@ -103,6 +103,11 @@ struct imx_spi_flash {
 	struct spi_flash flash;
 };
 
+struct imx_spi_flash_vendor {
+	u8 mfr_id;
+	int (*probe)(struct imx_spi_flash *imx_sf, u8 *idcode);
+};
+
 s32 spi_nor_flash_query(struct spi_flash *flash, void* data);
 s32 spi_nor_status(struct spi_flash *flash, u8 status_code);
 s32 spi_nor_cmd_1byte(struct spi_flash *flash, u8 cmd);
@@ -111,5 +116,9 @@ static inline struct imx_spi_flash *to_imx_spi_flash(struct spi_flash *flash)
 {
 	return container_of(flash, struct imx_spi_flash, flash);
 }
+
+int spi_flash_probe_sst(struct imx_spi_flash *imx_sf, u8 *idcode);
+int spi_flash_probe_m25pxx(struct imx_spi_flash *imx_sf, u8 *idcode);
+int spi_flash_probe_atmel(struct imx_spi_flash *imx_sf, u8 *idcode);
 
 #endif /* _IMX_SPI_NOR_H_ */
