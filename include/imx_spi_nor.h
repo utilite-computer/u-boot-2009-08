@@ -23,6 +23,8 @@
 #ifndef _IMX_SPI_NOR_H_
 #define _IMX_SPI_NOR_H_
 
+#include <spi_flash.h>
+
 #define READ        0x03    /* tx:1 byte cmd + 3 byte addr;rx:variable bytes */
 #define READ_HS     0x0B    /* tx:1 byte cmd + 3 byte addr + 1 byte dummy; */
 #define RDSR        0x05    /* read stat reg 1 byte tx cmd + 1 byte rx status */
@@ -81,5 +83,33 @@
 #define SZ_64K      0x10000
 #define SZ_32K      0x8000
 #define SZ_4K       0x1000
+
+#define IMX_SPI_NOR_TRX_BUF_LEN 256
+
+extern u8 g_tx_buf[IMX_SPI_NOR_TRX_BUF_LEN];
+extern u8 g_rx_buf[IMX_SPI_NOR_TRX_BUF_LEN];
+
+struct imx_spi_flash_params {
+	u8		idcode1;
+	u32		block_size;
+	u32		block_count;
+	u32		device_size;
+	u32		page_size;
+	const char	*name;
+};
+
+struct imx_spi_flash {
+	const struct imx_spi_flash_params *params;
+	struct spi_flash flash;
+};
+
+s32 spi_nor_flash_query(struct spi_flash *flash, void* data);
+s32 spi_nor_status(struct spi_flash *flash, u8 status_code);
+s32 spi_nor_cmd_1byte(struct spi_flash *flash, u8 cmd);
+
+static inline struct imx_spi_flash *to_imx_spi_flash(struct spi_flash *flash)
+{
+	return container_of(flash, struct imx_spi_flash, flash);
+}
 
 #endif /* _IMX_SPI_NOR_H_ */

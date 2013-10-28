@@ -30,33 +30,10 @@
 #include <imx_spi.h>
 #include <imx_spi_nor.h>
 
-static u8 g_tx_buf[256];
-static u8 g_rx_buf[256];
-
 #define WRITE_ENABLE(a)		spi_nor_cmd_1byte(a, OPCODE_WREN)
 #define	write_enable(a)		WRITE_ENABLE(a)
 
 #define	SPI_FIFOSIZE		24
-
-struct imx_spi_flash_params {
-	u8		idcode1;
-	u32		block_size;
-	u32		block_count;
-	u32		device_size;
-	u32		page_size;
-	const char	*name;
-};
-
-struct imx_spi_flash {
-	const struct imx_spi_flash_params *params;
-	struct spi_flash flash;
-};
-
-static inline struct imx_spi_flash *
-to_imx_spi_flash(struct spi_flash *flash)
-{
-	return container_of(flash, struct imx_spi_flash, flash);
-}
 
 static const struct imx_spi_flash_params imx_spi_flash_table[] = {
 	{
@@ -77,62 +54,13 @@ static const struct imx_spi_flash_params imx_spi_flash_table[] = {
 	},
 };
 
-static s32 spi_nor_cmd_1byte(struct spi_flash *flash, u8 cmd)
-{
-	g_tx_buf[0] = cmd;
-	g_tx_buf[1] = 0;
-	g_tx_buf[2] = 0;
-	g_tx_buf[3] = 0;
-
-	if (spi_xfer(flash->spi, (1 << 3), g_tx_buf, g_rx_buf,
-			SPI_XFER_BEGIN | SPI_XFER_END) != 0) {
-		printf("Error: %s(): %d\n", __func__, __LINE__);
-		return -1;
-	}
-	return 0;
-}
-
-static s32 spi_nor_flash_query(struct spi_flash *flash, void* data)
-{
-	u8 au8Tmp[4] = { 0 };
-	u8 *pData = (u8 *)data;
-
-	g_tx_buf[3] = JEDEC_ID;
-
-	if (spi_xfer(flash->spi, (4 << 3), g_tx_buf, au8Tmp,
-				SPI_XFER_BEGIN | SPI_XFER_END)) {
-		return -1;
-	}
-
-	printf("JEDEC ID: 0x%02x:0x%02x:0x%02x\n",
-			au8Tmp[2], au8Tmp[1], au8Tmp[0]);
-
-	pData[0] = au8Tmp[2];
-	pData[1] = au8Tmp[1];
-	pData[2] = au8Tmp[0];
-
-	return 0;
-}
-
-static s32 spi_nor_status(struct spi_flash *flash)
-{
-	g_tx_buf[1] = OPCODE_RDSR;
-
-	if (spi_xfer(flash->spi, 2 << 3, g_tx_buf, g_rx_buf,
-			SPI_XFER_BEGIN | SPI_XFER_END) != 0) {
-		printf("Error: %s(): %d\n", __func__, __LINE__);
-		return 0;
-	}
-	return g_rx_buf[0];
-}
-
 static int wait_till_ready(struct spi_flash *flash)
 {
 	int sr;
 	int times = 10000;
 
 	do {
-		sr = spi_nor_status(flash);
+		sr = spi_nor_status(flash, OPCODE_RDSR);
 		if (sr < 0)
 			break;
 		else if (!(sr & SR_WIP))
@@ -540,19 +468,3 @@ err_claim_bus:
 	return NULL;
 }
 
-void spi_flash_free(struct spi_flash *flash)
-{
-	struct imx_spi_flash *imx_sf = NULL;
-
-	if (!flash)
-		return;
-
-	imx_sf = to_imx_spi_flash(flash);
-
-	if (flash->spi) {
-		spi_free_slave(flash->spi);
-		flash->spi = NULL;
-	}
-
-	free(imx_sf);
-}

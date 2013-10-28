@@ -31,30 +31,8 @@
 #include <imx_spi.h>
 #include <imx_spi_nor.h>
 
-static u8 g_tx_buf[256];
-static u8 g_rx_buf[256];
-
 #define WRITE_ENABLE(a)			 spi_nor_cmd_1byte(a, WREN)
 #define ENABLE_WRITE_STATUS(a)	 spi_nor_cmd_1byte(a, EWSR)
-
-struct imx_spi_flash_params {
-	u8		idcode1;
-	u32		block_size;
-	u32		block_count;
-	u32		device_size;
-	const char	*name;
-};
-
-struct imx_spi_flash {
-	const struct imx_spi_flash_params *params;
-	struct spi_flash flash;
-};
-
-static inline struct imx_spi_flash *
-to_imx_spi_flash(struct spi_flash *flash)
-{
-	return container_of(flash, struct imx_spi_flash, flash);
-}
 
 static const struct imx_spi_flash_params imx_spi_flash_table[] = {
 	{
@@ -65,40 +43,6 @@ static const struct imx_spi_flash_params imx_spi_flash_table[] = {
 		.name			= "AT45DB321D - 4MB",
 	},
 };
-
-static s32 spi_nor_flash_query(struct spi_flash *flash, void* data)
-{
-	u8 au8Tmp[4] = { 0 };
-	u8 *pData = (u8 *)data;
-
-	g_tx_buf[3] = JEDEC_ID;
-
-	if (spi_xfer(flash->spi, (4 << 3), g_tx_buf, au8Tmp,
-				SPI_XFER_BEGIN | SPI_XFER_END)) {
-		return -1;
-	}
-
-	printf("JEDEC ID: 0x%02x:0x%02x:0x%02x\n",
-			au8Tmp[2], au8Tmp[1], au8Tmp[0]);
-
-	pData[0] = au8Tmp[2];
-	pData[1] = au8Tmp[1];
-	pData[2] = au8Tmp[0];
-
-	return 0;
-}
-
-static s32 spi_nor_status(struct spi_flash *flash)
-{
-	g_tx_buf[1] = STAT_READ;
-
-	if (spi_xfer(flash->spi, 2 << 3, g_tx_buf, g_rx_buf,
-			SPI_XFER_BEGIN | SPI_XFER_END) != 0) {
-		printf("Error: %s(): %d\n", __func__, __LINE__);
-		return 0;
-	}
-	return g_rx_buf[0];
-}
 
 #if 0
 /*!
@@ -122,7 +66,7 @@ static int spi_nor_erase_page(struct spi_flash *flash,
 		return -1;
 	}
 
-	while (spi_nor_status(flash) & RDSR_BUSY)
+	while (spi_nor_status(flash, STAT_READ) & RDSR_BUSY)
 		;
 
 	return 0;
@@ -249,7 +193,7 @@ static int spi_nor_flash_write(struct spi_flash *flash, u32 offset,
 			__func__, offset, buf, len);
 
 	/* Read the status register to get the Page size */
-	if (spi_nor_status(flash) & STAT_PG_SZ) {
+	if (spi_nor_status(flash, STAT_READ) & STAT_PG_SZ) {
 		page_size = 512;
 	} else {
 		puts("Unsupported Page Size of 528 bytes\n");
@@ -264,7 +208,7 @@ static int spi_nor_flash_write(struct spi_flash *flash, u32 offset,
 			return -1;
 		}
 
-		while (!(spi_nor_status(flash) & STAT_BUSY))
+		while (!(spi_nor_status(flash, STAT_READ) & STAT_BUSY))
 			;
 
 		puts("Reprogrammed the Page Size to 512 bytes\n");
@@ -333,7 +277,7 @@ static int spi_nor_flash_write(struct spi_flash *flash, u32 offset,
 				return -1;
 			}
 
-			while (!(spi_nor_status(flash) & STAT_BUSY))
+			while (!(spi_nor_status(flash, STAT_READ) & STAT_BUSY))
 				;
 
 			/* Deduct 4 bytes as it is used for Opcode & address bytes */
@@ -357,7 +301,7 @@ static int spi_nor_flash_write(struct spi_flash *flash, u32 offset,
 			return -1;
 		}
 
-		while (!(spi_nor_status(flash) & STAT_BUSY))
+		while (!(spi_nor_status(flash, STAT_READ) & STAT_BUSY))
 			;
 
 		d_addr += bytes_sent;
@@ -394,7 +338,7 @@ static int spi_nor_flash_write(struct spi_flash *flash, u32 offset,
 			return -1;
 		}
 
-		while (!(spi_nor_status(flash) & STAT_BUSY))
+		while (!(spi_nor_status(flash, STAT_READ) & STAT_BUSY))
 			;
 
 		if (page_size == 512)
@@ -412,7 +356,7 @@ static int spi_nor_flash_write(struct spi_flash *flash, u32 offset,
 				return -1;
 		}
 
-		while (!(spi_nor_status(flash) & STAT_BUSY))
+		while (!(spi_nor_status(flash, STAT_READ) & STAT_BUSY))
 				;
 	}
 
@@ -512,21 +456,3 @@ err_claim_bus:
 		spi_free_slave(spi);
 	return NULL;
 }
-
-void spi_flash_free(struct spi_flash *flash)
-{
-	struct imx_spi_flash *imx_sf = NULL;
-
-	if (!flash)
-		return;
-
-	imx_sf = to_imx_spi_flash(flash);
-
-	if (flash->spi) {
-		spi_free_slave(flash->spi);
-		flash->spi = NULL;
-	}
-
-	free(imx_sf);
-}
-
