@@ -37,11 +37,11 @@
 
 static const struct imx_spi_flash_params imx_spi_flash_sst_table[] = {
 	{
-		.idcode1		= 0x25,
-		.block_size		= SZ_64K,
-		.block_count		= 32,
-		.device_size		= SZ_64K * 32,
-		.name			= "SST25VF016B - 2MB",
+		.idcode1	= 0x25,
+		.block_size	= SZ_64K,
+		.block_count	= 32,
+		.device_size	= SZ_64K * 32,
+		.name		= "SST25VF016B - 2MB",
 	},
 };
 

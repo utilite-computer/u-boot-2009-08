@@ -37,20 +37,20 @@
 
 static const struct imx_spi_flash_params imx_spi_flash_m25pxx_table[] = {
 	{
-		.idcode1		= 0x71,
-		.block_size		= SZ_64K,
-		.block_count		= 32,
-		.device_size		= SZ_64K * 32,
-		.page_size		= 256,
-		.name			= "M25P16 - 2MB",
+		.idcode1	= 0x71,
+		.block_size	= SZ_64K,
+		.block_count	= 32,
+		.device_size	= SZ_64K * 32,
+		.page_size	= 256,
+		.name		= "M25PX16 - 2MB",
 	},
 	{
-		.idcode1		= 0x20,
-		.block_size		= SZ_64K,
-		.block_count		= 64,
-		.device_size		= SZ_64K * 64,
-		.page_size		= 256,
-		.name			= "M25P32 - 4MB",
+		.idcode1	= 0x20,
+		.block_size	= SZ_64K,
+		.block_count	= 64,
+		.device_size	= SZ_64K * 64,
+		.page_size	= 256,
+		.name		= "M25P32 - 4MB",
 	},
 };
 
@@ -202,7 +202,8 @@ static int m25pxx_flash_read(struct spi_flash *flash, u32 from,
 	return 0;
 }
 
-static int _fsl_spi_write(struct spi_flash *flash, const void *buf, int len, int addr)
+static int _fsl_spi_write(struct spi_flash *flash,
+			  const void *buf, int len, int addr)
 {
 	u8 txer[SPI_FIFOSIZE] = { 0 };
 	u8 *d = txer;

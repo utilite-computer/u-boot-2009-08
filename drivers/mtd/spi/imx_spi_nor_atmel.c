@@ -36,11 +36,11 @@
 
 static const struct imx_spi_flash_params imx_spi_flash_atmel_table[] = {
 	{
-		.idcode1		= 0x27,
-		.block_size		= SZ_64K,
-		.block_count		= 64,
-		.device_size		= SZ_64K * 64,
-		.name			= "AT45DB321D - 4MB",
+		.idcode1	= 0x27,
+		.block_size	= SZ_64K,
+		.block_count	= 64,
+		.device_size	= SZ_64K * 64,
+		.name		= "AT45DB321D - 4MB",
 	},
 };
 
