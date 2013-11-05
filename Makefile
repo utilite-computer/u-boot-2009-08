@@ -3128,13 +3128,13 @@ cm_fx6_mx6q_2gb_config :		unconfig
 cm_fx6_mx6q_4gb_config :		unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
 
-cm_fx6_mx6dl_256mb_config :		unconfig
+cm_fx6_mx6s_256mb_config :		unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
 
-cm_fx6_mx6dl_512mb_config :		unconfig
+cm_fx6_mx6s_512mb_config :		unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
 
-cm_fx6_mx6dl_1gb_config :		unconfig
+cm_fx6_mx6s_1gb_config :		unconfig
 	@$(MKCONFIG) $(@:_config=) arm arm_cortexa8 cm_fx6 compulab mx6
 
 #########################################################################

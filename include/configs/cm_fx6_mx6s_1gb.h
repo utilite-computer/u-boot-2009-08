@@ -19,9 +19,9 @@
  * Foundation, Inc.
  */
 
-#define CONFIG_MX6DL
-#define CONFIG_MX6DL_DDR3
-#define CONFIG_DDR_32BIT
+#define CONFIG_MX6DL				/* DL/S */
+#define CONFIG_MX6DL_DDR3			/* DL/S */
+#define CONFIG_DDR_32BIT			/* Solo uses only 32bit */
 #define CONFIG_NR_DRAM_BANKS	2
 #define PHYS_SDRAM_1_SIZE	(512 << 20)	/* 512MB */
 #define PHYS_SDRAM_2_SIZE	(512 << 20)	/* 512MB */
