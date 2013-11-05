@@ -53,7 +53,7 @@ self_ptr:         .word ivt_header
 app_code_csf:     .word __hab_data
 #else
 app_code_csf:     .word 0x0
-#endif
+#endif /* CONFIG_SECURE_BOOT */
 reserv2:          .word 0x0
 
 boot_data:        .word TEXT_BASE
@@ -61,10 +61,10 @@ boot_data:        .word TEXT_BASE
 image_len:        .word __hab_data_end - TEXT_BASE + CONFIG_FLASH_HEADER_OFFSET
 #else
 image_len:        .word _end_of_copy  - TEXT_BASE + CONFIG_FLASH_HEADER_OFFSET
-#endif
+#endif /* CONFIG_SECURE_BOOT */
 plugin:           .word 0x0
 
-#if defined CONFIG_MX6DL_DDR3
+#ifdef CONFIG_MX6DL_DDR3
 dcd_hdr:          .word 0x40E002D2 /* Tag=0xD2, Len=91*8 + 4 + 4, Ver=0x40 */
 write_dcd_cmd:    .word 0x04DC02CC /* Tag=0xCC, Len=91*8 + 4, Param=0x04 */
 
@@ -197,8 +197,9 @@ MXC_DCD_ITEM(89, MMDC_P0_BASE_ADDR + 0x004, 0x0002556d)
 MXC_DCD_ITEM(90, MMDC_P1_BASE_ADDR + 0x004, 0x00011006)
 MXC_DCD_ITEM(91, MMDC_P0_BASE_ADDR + 0x01c, 0x00000000)
 
-#else
+#else /* CONFIG_MX6DL_DDR3 */
 
+/* CONFIG_MX6Q_DDR3 */
 dcd_hdr:          .word 0x40D802D2 /* Tag=0xD2, Len=90*8 + 4 + 4, Ver=0x40 */
 write_dcd_cmd:    .word 0x04D402CC /* Tag=0xCC, Len=90*8 + 4, Param=0x04 */
 
@@ -325,9 +326,9 @@ MXC_DCD_ITEM(88, MMDC_P1_BASE_ADDR + 0x8b8, 0x00000800)
 MXC_DCD_ITEM(89, MMDC_P0_BASE_ADDR + 0x01c, 0x00000000)
 MXC_DCD_ITEM(90, MMDC_P0_BASE_ADDR + 0x404, 0x00011006)
 
-#endif
+#endif /* CONFIG_MX6DL_DDR3 */
 
-#else
+#else /* CONFIG_FLASH_PLUG_IN */
 
 /*****************PLUGIN IN mode********************/
 
@@ -1201,6 +1202,6 @@ BOOT_DATA:        .word   TEXT_BASE
                   .word   0
 /*********************************************************************/
 #endif
-#endif
+#endif /* CONFIG_FLASH_PLUG_IN */
 
-#endif
+#endif /* CONFIG_FLASH_HEADER */
