@@ -20,7 +20,7 @@
  */
 
 #define CONFIG_MX6DL				/* DL/S */
-#define CONFIG_MX6DL_DDR3			/* DL/S */
+#define CONFIG_MX6SOLO_DDR3			/* Solo */
 #define CONFIG_DDR_16BIT			/* Single chip */
 #define CONFIG_NR_DRAM_BANKS	1
 #define PHYS_SDRAM_1_SIZE	(256 << 20)	/* 256MB */
