@@ -56,7 +56,7 @@ int mmc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 #ifdef CONFIG_MMC_TRACE
 	int ret;
 	int i;
-	u8 *ptr;
+	u32 *ptr;
 
 	printf("CMD_SEND:%d\n", cmd->cmdidx);
 	printf("\t\tARG\t\t\t 0x%08X\n", cmd->cmdarg);
@@ -91,7 +91,7 @@ int mmc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 			ptr = &cmd->response[i];
 			ptr += 3;
 			for (j = 0; j < 4; j++)
-				printf("%02X ", *ptr--);
+				printf("0x%X ", *ptr--);
 			printf("\n");
 		}
 		break;
