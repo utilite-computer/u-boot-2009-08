@@ -566,15 +566,15 @@ int board_eth_init(bd_t *bis)
 
 #ifdef CONFIG_CMD_MMC
 
-/* On this board, only SD3 can support 1.8V signalling
- * that is required for UHS-I mode of operation.
+/* 
+ * CM-FX6 does not support the 1.8V signalling.
  * Last element in struct is used to indicate 1.8V support.
  */
-struct fsl_esdhc_cfg usdhc_cfg[4] = {
-	{USDHC1_BASE_ADDR, 1, 1, 1, 0},
-	{USDHC2_BASE_ADDR, 1, 1, 1, 0},
-	{USDHC3_BASE_ADDR, 1, 1, 1, 1},
-	{USDHC4_BASE_ADDR, 1, 1, 1, 0},
+static struct fsl_esdhc_cfg cm_fx6_usdhc_cfg[] = {
+	{ USDHC1_BASE_ADDR, 1, 1, 1, 0 },
+	{ USDHC2_BASE_ADDR, 1, 1, 1, 0 },
+	{ USDHC3_BASE_ADDR, 1, 1, 1, 0 },
+	{ USDHC4_BASE_ADDR, 1, 1, 1, 0 },
 };
 
 #ifdef CONFIG_DYNAMIC_MMC_DEVNO
@@ -681,7 +681,7 @@ int usdhc_gpio_init(bd_t *bis)
 				index+1, CONFIG_SYS_FSL_USDHC_NUM);
 			return status;
 		}
-		status |= fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
+		status |= fsl_esdhc_initialize(bis, &cm_fx6_usdhc_cfg[index]);
 	}
 
 	return status;
