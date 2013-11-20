@@ -25,4 +25,6 @@
 #define PHYS_SDRAM_1_SIZE	0x70000000	/* 1792MB */
 #define PHYS_SDRAM_2_SIZE	0x7FF00000	/* 2047MB */
 
+#define CONFIG_CMD_SATA
+
 #include "cm_fx6.h"

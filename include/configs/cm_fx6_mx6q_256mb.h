@@ -24,4 +24,6 @@
 #define CONFIG_NR_DRAM_BANKS	1
 #define PHYS_SDRAM_1_SIZE	(256 << 20)	/* 256MB */
 
+#define CONFIG_CMD_SATA
+
 #include "cm_fx6.h"

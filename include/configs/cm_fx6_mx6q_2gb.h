@@ -24,4 +24,6 @@
 #define PHYS_SDRAM_1_SIZE	(1 << 30)	/* 1GB */
 #define PHYS_SDRAM_2_SIZE	(1 << 30)	/* 1GB */
 
+#define CONFIG_CMD_SATA
+
 #include "cm_fx6.h"
