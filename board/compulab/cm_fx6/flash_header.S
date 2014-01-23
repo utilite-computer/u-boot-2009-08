@@ -57,136 +57,377 @@ plugin:		.word 0x0
 
 #ifdef CONFIG_MX6SOLO_DDR3
 /* i.MX6 Dual Lite/Solo DDR3 configuration */
-dcd_hdr:          .word 0x40E002D2 /* Tag=0xD2, Len=91*8 + 4 + 4, Ver=0x40 */
-write_dcd_cmd:    .word 0x04DC02CC /* Tag=0xCC, Len=91*8 + 4, Param=0x04 */
 
-# IOMUXC_BASE_ADDR  = 0x20e0000
-# DDR IO TYPE
-MXC_DCD_ITEM(1, IOMUXC_BASE_ADDR + 0x774, 0x000c0000)
-MXC_DCD_ITEM(2, IOMUXC_BASE_ADDR + 0x754, 0x00000000)
-# Clock
-MXC_DCD_ITEM(3, IOMUXC_BASE_ADDR + 0x4ac, 0x00000030)
-MXC_DCD_ITEM(4, IOMUXC_BASE_ADDR + 0x4b0, 0x00000030)
-# Address
-MXC_DCD_ITEM(5, IOMUXC_BASE_ADDR + 0x464, 0x00000030)
-MXC_DCD_ITEM(6, IOMUXC_BASE_ADDR + 0x490, 0x00000030)
-MXC_DCD_ITEM(7, IOMUXC_BASE_ADDR + 0x74c, 0x00000030)
-# Control
-MXC_DCD_ITEM(8, IOMUXC_BASE_ADDR + 0x494, 0x00000030)
-MXC_DCD_ITEM(9, IOMUXC_BASE_ADDR + 0x4a4, 0x00003000)
-MXC_DCD_ITEM(10, IOMUXC_BASE_ADDR + 0x4a8, 0x00003000)
-MXC_DCD_ITEM(11, IOMUXC_BASE_ADDR + 0x4a0, 0x00000000)
-MXC_DCD_ITEM(12, IOMUXC_BASE_ADDR + 0x4b4, 0x00003030)
-MXC_DCD_ITEM(13, IOMUXC_BASE_ADDR + 0x4b8, 0x00003030)
-MXC_DCD_ITEM(14, IOMUXC_BASE_ADDR + 0x76c, 0x00000030)
-# Data Strobe
-MXC_DCD_ITEM(15, IOMUXC_BASE_ADDR + 0x750, 0x00020000)
-MXC_DCD_ITEM(16, IOMUXC_BASE_ADDR + 0x4bc, 0x00000030)
-MXC_DCD_ITEM(17, IOMUXC_BASE_ADDR + 0x4c0, 0x00000030)
-MXC_DCD_ITEM(18, IOMUXC_BASE_ADDR + 0x4c4, 0x00000030)
-MXC_DCD_ITEM(19, IOMUXC_BASE_ADDR + 0x4c8, 0x00000030)
-MXC_DCD_ITEM(20, IOMUXC_BASE_ADDR + 0x4cc, 0x00000030)
-MXC_DCD_ITEM(21, IOMUXC_BASE_ADDR + 0x4d0, 0x00000030)
-MXC_DCD_ITEM(22, IOMUXC_BASE_ADDR + 0x4d4, 0x00000030)
-MXC_DCD_ITEM(23, IOMUXC_BASE_ADDR + 0x4d8, 0x00000030)
-# DATA
-MXC_DCD_ITEM(24, IOMUXC_BASE_ADDR + 0x760, 0x00020000)
-MXC_DCD_ITEM(25, IOMUXC_BASE_ADDR + 0x764, 0x00000030)
-MXC_DCD_ITEM(26, IOMUXC_BASE_ADDR + 0x770, 0x00000030)
-MXC_DCD_ITEM(27, IOMUXC_BASE_ADDR + 0x778, 0x00000030)
-MXC_DCD_ITEM(28, IOMUXC_BASE_ADDR + 0x77c, 0x00000030)
-MXC_DCD_ITEM(29, IOMUXC_BASE_ADDR + 0x780, 0x00000030)
-MXC_DCD_ITEM(30, IOMUXC_BASE_ADDR + 0x784, 0x00000030)
-MXC_DCD_ITEM(31, IOMUXC_BASE_ADDR + 0x78c, 0x00000030)
-MXC_DCD_ITEM(32, IOMUXC_BASE_ADDR + 0x748, 0x00000030)
-MXC_DCD_ITEM(33, IOMUXC_BASE_ADDR + 0x470, 0x00000030)
-MXC_DCD_ITEM(34, IOMUXC_BASE_ADDR + 0x474, 0x00000030)
-MXC_DCD_ITEM(35, IOMUXC_BASE_ADDR + 0x478, 0x00000030)
-MXC_DCD_ITEM(36, IOMUXC_BASE_ADDR + 0x47c, 0x00000030)
-MXC_DCD_ITEM(37, IOMUXC_BASE_ADDR + 0x480, 0x00000030)
-MXC_DCD_ITEM(38, IOMUXC_BASE_ADDR + 0x484, 0x00000030)
-MXC_DCD_ITEM(39, IOMUXC_BASE_ADDR + 0x488, 0x00000030)
-MXC_DCD_ITEM(40, IOMUXC_BASE_ADDR + 0x48c, 0x00000030)
+/* Tag=0xD2, Len=80*8 + 2*4 + 1*4 + 4, Ver=0x41 */
+dcd_hdr:	.word 0x419002D2
+write_dcd_cmd:	.word 0x043C01CC /* Tag=0xCC, Len=39*8 + 4, Param=0x04 */
 
-# MMDC_P0_BASE_ADDR = 0x021b0000
-# MMDC_P1_BASE_ADDR = 0x021b4000
-# Calibrations
-# ZQ
-MXC_DCD_ITEM(41, MMDC_P0_BASE_ADDR + 0x800, 0xa1390003)
-MXC_DCD_ITEM(42, MMDC_P1_BASE_ADDR + 0x800, 0xa1390003)
-# write leveling
-MXC_DCD_ITEM(43, MMDC_P0_BASE_ADDR + 0x80c, 0x001F001F)
-MXC_DCD_ITEM(44, MMDC_P0_BASE_ADDR + 0x810, 0x001F001F)
-MXC_DCD_ITEM(45, MMDC_P1_BASE_ADDR + 0x80c, 0x00370037)
-MXC_DCD_ITEM(46, MMDC_P1_BASE_ADDR + 0x810, 0x00370037)
-# DQS gating, read delay, write delay calibration values
-# based on calibration compare of 0x00ffff00
-MXC_DCD_ITEM(47, MMDC_P0_BASE_ADDR + 0x83c, 0x422f0220)
-MXC_DCD_ITEM(48, MMDC_P0_BASE_ADDR + 0x840, 0x021f0219)
-MXC_DCD_ITEM(49, MMDC_P1_BASE_ADDR + 0x83C, 0x422f0220)
-MXC_DCD_ITEM(50, MMDC_P1_BASE_ADDR + 0x840, 0x022d022f)
-MXC_DCD_ITEM(51, MMDC_P0_BASE_ADDR + 0x848, 0x47494b49)
-MXC_DCD_ITEM(52, MMDC_P1_BASE_ADDR + 0x848, 0x48484c47)
-MXC_DCD_ITEM(53, MMDC_P0_BASE_ADDR + 0x850, 0x39382b2f)
-MXC_DCD_ITEM(54, MMDC_P1_BASE_ADDR + 0x850, 0x2f35312c)
-# read data bit delay
-MXC_DCD_ITEM(55, MMDC_P0_BASE_ADDR + 0x81c, 0x33333333)
-MXC_DCD_ITEM(56, MMDC_P0_BASE_ADDR + 0x820, 0x33333333)
-MXC_DCD_ITEM(57, MMDC_P0_BASE_ADDR + 0x824, 0x33333333)
-MXC_DCD_ITEM(58, MMDC_P0_BASE_ADDR + 0x828, 0x33333333)
-MXC_DCD_ITEM(59, MMDC_P1_BASE_ADDR + 0x81c, 0x33333333)
-MXC_DCD_ITEM(60, MMDC_P1_BASE_ADDR + 0x820, 0x33333333)
-MXC_DCD_ITEM(61, MMDC_P1_BASE_ADDR + 0x824, 0x33333333)
-MXC_DCD_ITEM(62, MMDC_P1_BASE_ADDR + 0x828, 0x33333333)
-# Complete calibration by forced measurment
-MXC_DCD_ITEM(63, MMDC_P0_BASE_ADDR + 0x8b8, 0x00000800)
-MXC_DCD_ITEM(64, MMDC_P1_BASE_ADDR + 0x8b8, 0x00000800)
-# MMDC init:
-# in DDR3, 64-bit mode, only MMDC0 is initiated:
-MXC_DCD_ITEM(65, MMDC_P0_BASE_ADDR + 0x004, 0x0002002d)
-MXC_DCD_ITEM(66, MMDC_P0_BASE_ADDR + 0x008, 0x00333030)
+/* DCD */
+/* IOMUXC_BASE_ADDR  = 0x20e0000 */
 
-MXC_DCD_ITEM(67, MMDC_P0_BASE_ADDR + 0x00c, 0x40445323)
-MXC_DCD_ITEM(68, MMDC_P0_BASE_ADDR + 0x010, 0xb66e8c63)
+/* SDQS[0-7]_P
+ * DSE	= 0x7 (34OHM)
+ * ODT	= 0 (disabled)
+ * PKE	= 0 (disabled)
+ * PUE	= 0 (keeper)
+ * PUS	= 0 (100K OHM PD)
+ */
+MXC_DCD_ITEM(1, IOMUXC_BASE_ADDR + 0x4bc, 0x00000038)
+MXC_DCD_ITEM(2, IOMUXC_BASE_ADDR + 0x4c0, 0x00000038)
+MXC_DCD_ITEM(3, IOMUXC_BASE_ADDR + 0x4c4, 0x00000038)
+MXC_DCD_ITEM(4, IOMUXC_BASE_ADDR + 0x4c8, 0x00000038)
+MXC_DCD_ITEM(5, IOMUXC_BASE_ADDR + 0x4cc, 0x00000038)
+MXC_DCD_ITEM(6, IOMUXC_BASE_ADDR + 0x4d0, 0x00000038)
+MXC_DCD_ITEM(7, IOMUXC_BASE_ADDR + 0x4d4, 0x00000038)
+MXC_DCD_ITEM(8, IOMUXC_BASE_ADDR + 0x4d8, 0x00000038)
 
-MXC_DCD_ITEM(69, MMDC_P0_BASE_ADDR + 0x014, 0x01ff00db)
-MXC_DCD_ITEM(70, MMDC_P0_BASE_ADDR + 0x018, 0x00081740)
-MXC_DCD_ITEM(71, MMDC_P0_BASE_ADDR + 0x01c, 0x00008000)
-MXC_DCD_ITEM(72, MMDC_P0_BASE_ADDR + 0x02c, 0x000026d2)
-MXC_DCD_ITEM(73, MMDC_P0_BASE_ADDR + 0x030, 0x00440e21)
-MXC_DCD_ITEM(74, MMDC_P0_BASE_ADDR + 0x040, 0x0000003f)
+/* DQM[0-7] */
+MXC_DCD_ITEM(9, IOMUXC_BASE_ADDR + 0x470, 0x00000038)
+MXC_DCD_ITEM(10, IOMUXC_BASE_ADDR + 0x474, 0x00000038)
+MXC_DCD_ITEM(11, IOMUXC_BASE_ADDR + 0x478, 0x00000038)
+MXC_DCD_ITEM(12, IOMUXC_BASE_ADDR + 0x47c, 0x00000038)
+MXC_DCD_ITEM(13, IOMUXC_BASE_ADDR + 0x480, 0x00000038)
+MXC_DCD_ITEM(14, IOMUXC_BASE_ADDR + 0x484, 0x00000038)
+MXC_DCD_ITEM(15, IOMUXC_BASE_ADDR + 0x488, 0x00000038)
+MXC_DCD_ITEM(16, IOMUXC_BASE_ADDR + 0x48c, 0x00000038)
 
-#ifdef CONFIG_DDR_16BIT
-MXC_DCD_ITEM(75, MMDC_P0_BASE_ADDR + 0x000, 0x83180000)
-#elif defined(CONFIG_DDR_32BIT)
-MXC_DCD_ITEM(75, MMDC_P0_BASE_ADDR + 0x000, 0xc3190000)
+/* CAS, RAS */
+MXC_DCD_ITEM(17, IOMUXC_BASE_ADDR + 0x464, 0x00000038)
+MXC_DCD_ITEM(18, IOMUXC_BASE_ADDR + 0x490, 0x00000038)
+
+/* Clocks: SDCLK0_P, SDCLK1_P */
+MXC_DCD_ITEM(19, IOMUXC_BASE_ADDR + 0x4ac, 0x00000038)
+MXC_DCD_ITEM(20, IOMUXC_BASE_ADDR + 0x4b0, 0x00000038)
+
+/*
+ * Below DRAM_RESET[DDR_SEL] = 0 which is incorrect according to
+ * Freescale SDLRM, but this is exactly the value used by the automatic
+ * calibration script and it works also in all our tests, so we leave
+ * it as is at this point.
+ */
+/* Control: RESET, SDBA2 */
+MXC_DCD_ITEM(21, IOMUXC_BASE_ADDR + 0x494, 0x00000038)
+MXC_DCD_ITEM(22, IOMUXC_BASE_ADDR + 0x4a0, 0x00000000)
+
+/* Control: ODT0, ODT1 */
+MXC_DCD_ITEM(23, IOMUXC_BASE_ADDR + 0x4b4, 0x00000038)
+MXC_DCD_ITEM(24, IOMUXC_BASE_ADDR + 0x4b8, 0x00000038)
+
+/* B[0-7]DS */
+MXC_DCD_ITEM(25, IOMUXC_BASE_ADDR + 0x764, 0x00000038)
+MXC_DCD_ITEM(26, IOMUXC_BASE_ADDR + 0x770, 0x00000038)
+MXC_DCD_ITEM(27, IOMUXC_BASE_ADDR + 0x778, 0x00000038)
+MXC_DCD_ITEM(28, IOMUXC_BASE_ADDR + 0x77c, 0x00000038)
+MXC_DCD_ITEM(29, IOMUXC_BASE_ADDR + 0x780, 0x00000038)
+MXC_DCD_ITEM(30, IOMUXC_BASE_ADDR + 0x784, 0x00000038)
+MXC_DCD_ITEM(31, IOMUXC_BASE_ADDR + 0x78c, 0x00000038)
+MXC_DCD_ITEM(32, IOMUXC_BASE_ADDR + 0x748, 0x00000038)
+
+/* ADDDS - Address lines Drive Strength */
+MXC_DCD_ITEM(33, IOMUXC_BASE_ADDR + 0x74c, 0x00000038)
+
+/* DDRMODE_CTL */
+MXC_DCD_ITEM(34, IOMUXC_BASE_ADDR + 0x750, 0x00020000)
+
+/* DDRPKE
+ * PKE	= 0 (pull disabled)
+ */
+MXC_DCD_ITEM(35, IOMUXC_BASE_ADDR + 0x754, 0x00000000)
+
+/* DDRMODE */
+MXC_DCD_ITEM(36, IOMUXC_BASE_ADDR + 0x760, 0x00020000)
+
+/* CTLDS */
+MXC_DCD_ITEM(37, IOMUXC_BASE_ADDR + 0x76c, 0x00000038)
+
+/* DDR IO TYPE */
+MXC_DCD_ITEM(38, IOMUXC_BASE_ADDR + 0x774, 0x000C0000)
+
+/* MMDC_P0_BASE_ADDR = 0x021b0000 */
+/* MMDC_P1_BASE_ADDR = 0x021b4000 */
+
+/* ----- One time ZQ calibration start ----- */
+/* MPZQHWCTRL
+ * ZQ_MODE	= 0x3 (ZQ calibr. both: i.MX & DDR device on SR exit & periodic)
+ * ZQ_HW_PER	= 0 (every 1ms)
+ * ZQ_HW_PU_RES	= 0 (ro)
+ * ZQ_HW_PD_RES	= 0 (ro)
+ * ZQ_HW_FOR	= 1 (force ZQ calibration)
+ * TZQ_INIT	= 0x4 (512 cycles - default JEDEC value for DDR3)
+ * TZQ_OPER	= 0x3 (256 cycles - default JEDEC value for DDR3)
+ * TZQ_CS	= 0x2 (128 cycles - default)
+ * ZQ_EARLY_COMPARATOR_EN_TIMER	= 0x14 (21 cycles - default)
+ */
+MXC_DCD_ITEM(39, MMDC_P0_BASE_ADDR + 0x800, 0xA1390003)
+
+/* Wait for ZQ_HW_FOR to finish the calibration on both MMDCs */
+poll_dcd_cmd1: .word 0x040C00CF /* Tag=0xCF, Len=1*8 + 4, Param=0x04 */
+MXC_DCD_ITEM(40, MMDC_P0_BASE_ADDR + 0x800, 0x00010000)
+/* ----- One time ZQ calibration end ----- */
+
+write_dcd_cmd2:	.word 0x044401CC /* Tag=0xCC, Len=40*8 + 4, Param=0x04 */
+
+/* MPWLDECTRL[0-1] - write leveling preset values from calibration */
+MXC_DCD_ITEM(41, MMDC_P0_BASE_ADDR + 0x80c, 0x005B0061)
+MXC_DCD_ITEM(42, MMDC_P0_BASE_ADDR + 0x810, 0x004F0055)
+
+/* MPDGCTRL[0-1] - read DQS gating preset values from calibration */
+MXC_DCD_ITEM(43, MMDC_P0_BASE_ADDR + 0x83c, 0x0314030C)
+MXC_DCD_ITEM(44, MMDC_P0_BASE_ADDR + 0x840, 0x025C0268)
+
+/* MPRDDLCTL - read delay lines preset values from calibration */
+MXC_DCD_ITEM(45, MMDC_P0_BASE_ADDR + 0x848, 0x42464646)
+
+/* MPWRDLCTL - write delay lines preset values from calibration */
+MXC_DCD_ITEM(46, MMDC_P0_BASE_ADDR + 0x850, 0x36322C34)
+
+/* MMDC1_MPRDDQBY[0-3]DL
+ * rd_dq[0-7]_del	= 0x3 (3 delay units - recommended value)
+ */
+MXC_DCD_ITEM(47, MMDC_P0_BASE_ADDR + 0x81c, 0x33333333)
+MXC_DCD_ITEM(48, MMDC_P0_BASE_ADDR + 0x820, 0x33333333)
+MXC_DCD_ITEM(49, MMDC_P0_BASE_ADDR + 0x824, 0x33333333)
+MXC_DCD_ITEM(50, MMDC_P0_BASE_ADDR + 0x828, 0x33333333)
+
+/* MMDC2_MPRDDQBY[0-3]DL
+ * rd_dq[0-7]_del	= 0x3 (3 delay units - recommended value)
+ */
+MXC_DCD_ITEM(51, MMDC_P1_BASE_ADDR + 0x81c, 0x33333333)
+MXC_DCD_ITEM(52, MMDC_P1_BASE_ADDR + 0x820, 0x33333333)
+MXC_DCD_ITEM(53, MMDC_P1_BASE_ADDR + 0x824, 0x33333333)
+MXC_DCD_ITEM(54, MMDC_P1_BASE_ADDR + 0x828, 0x33333333)
+
+/* MPMUR0
+ * MU_BYP_VAL	= 0 (irrelevant for normal use)
+ * MU_BYP_EN	= 0 (irrelevant for normal use: use MU_UNIT_DEL_NUM)
+ * FRC_MSR	= 1 (complete calibration by forced measurement)
+ * MU_UNIT_DEL_NUM	= 0 (irrelevant for normal use)
+ */
+MXC_DCD_ITEM(55, MMDC_P0_BASE_ADDR + 0x8b8, 0x00000800)
+
+/* MDPDC
+ * tCKSRE	= 0x5 (5 cycles)
+ * tCKSRX	= 0x5 (5 cycles)
+ * BOTH_CS_PD	= 0 (independent PD)
+ * SLOW_PD	= 0 (fast mode)
+ * PWDT_0	= 0 (disabled)
+ * PWDT_1	= 0 (disabled)
+ * tCKE		= 0x2 (3 cycles)
+ * PRCT_0	= 0 (disabled)
+ * PRCT_1	= 0 (disabled)
+ */
+MXC_DCD_ITEM(56, MMDC_P0_BASE_ADDR + 0x004, 0x0002002D)
+
+/* MDOTC
+ * tODT_idle_off	= 0x4 (4 cycles)
+ * tODTLon		= 0x4 (4 cycles)
+ * tAXPD		= 0x4 (5CK)
+ * tANPD		= 0x4 (5CK)
+ * tAONPD		= 0x3 (4 cycles) ?
+ * tAOFPD		= 0x3 (4 cycles) ?
+ */
+MXC_DCD_ITEM(57, MMDC_P0_BASE_ADDR + 0x008, 0x1B444040)
+
+/* MDCFG0
+ * tRFC	  = 0x67 (104CK = ~260ns)
+ * tXS	  = 0x6B (108CK = ~270ns)
+ * tXP	  = 0x2 (3CK = ~7.5ns)
+ * tXPDDL = 0x9 (10CK = ~25ns)
+ * tFAW	  = 0x13 (20CK  = ~50ns)
+ * tCL	  = 0x5 (8 cycles)
+ */
+MXC_DCD_ITEM(58, MMDC_P0_BASE_ADDR + 0x00c, 0x676B5335)
+
+/* MDCFG1
+ * tCWL	  = 0x4 (6 cycles)
+ * tMRD	  = 0xB (12CK = ~22.5ns)
+ * tWR	  = 0x7 (8 cycles = 15ns)
+ * tRPA	  = 0x1 (tRP + 1)
+ * tRAS	  = 0xE (15CK = 37.5ns)
+ * tRC	  = 0x14 (21CK = 52.5ns)
+ * tRP	  = 0x5 (6CK = 15ns)
+ * tRCD	  = 0x5 (6CK = 15ns)
+ */
+MXC_DCD_ITEM(59, MMDC_P0_BASE_ADDR + 0x010, 0xB68E8F64)
+
+/* MDCFG2
+ * tRRD	  = 0x3 (4 cycles = 10ns)
+ * tWTR	  = 0x3 (4 cycles = 7.5ns)
+ * tRTP	  = 0x3 (4 cycles = 7.5ns)
+ * tDLLK  = 0x1FF (JEDEC value for DDR3: 512 cycles = 960ns)
+ */
+MXC_DCD_ITEM(60, MMDC_P0_BASE_ADDR + 0x014, 0x01FF00DB)
+
+/* MDMISC
+ * RST		= 0 (no reset)
+ * LPDDR2_2CH	= 0 (DDR3 mode)
+ * DDR_TYPE	= 0 (DDR3 mode)
+ * DDR_4_BANK	= 0 (8 banks)
+ * RALAT	= 0x5 cycles
+ * MIF3_MODE	= 0x3
+ * LPDDR2_S2	= 0 (DDR3)
+ * BI_ON	= 0x1 (banks interleave on)
+ * WALAT	= 0x1 (1 cycles)
+ * LHD		= 0 (Latency hiding on)
+ * ADDR_MIRROR	= 0x1
+ * CALIB_PER_CS	= 0 (Calib target CS0)
+ */
+MXC_DCD_ITEM(61, MMDC_P0_BASE_ADDR + 0x018, 0x00091740)
+
+/* MDSCR */
+/* Set CON_REQ - configuration request */
+MXC_DCD_ITEM(62, MMDC_P0_BASE_ADDR + 0x01c, 0x00008000)
+
+/* MDRWD
+ * RTR_DIFF	= 0x2 (2 cycles - Default)
+ * RTW_DIFF	= 0x2 (2 cycles - Default)
+ * WTW_DIFF	= 0x3 (3 cycles - Default)
+ * WTR_DIFF	= 0x3 (3 cycles - Default)
+ * RTW_SAME	= 0x2 (2 cycles - Default)
+ * tDAI		= 0 (1 cycle - irrelevant for DDR3)
+ */
+MXC_DCD_ITEM(63, MMDC_P0_BASE_ADDR + 0x02c, 0x000026D2)
+
+/* MDOR
+ * RST_to_CKE	= 0x23 (33 cycles - JEDEC for DDR3 - 500us)
+ * SDE_to_RST	= 0x10 (14 cycles - JEDEC for DDR3 - 200us)
+ * tXPR		= 0x6B (108 cycles = tRFC + 10ns)
+ */
+MXC_DCD_ITEM(64, MMDC_P0_BASE_ADDR + 0x030, 0x006B1023)
+
+/* MDCTL - configure physical DRAM parameters */
+#if defined(CONFIG_DDR_16BIT)
+/* DSIZ = 0 (16), BL = 0x1 (8), COL = 0x1 (10), ROW = 0x3 (14), CS0 & !CS1 */
+MXC_DCD_ITEM(65, MMDC_P0_BASE_ADDR + 0x000, 0x83180000)
+#elif defined(CONFIG_DDR_32BIT_512MB)
+/* DSIZ = 0x1 (32), BL = 0x1 (8), COL = 0x1 (10), ROW = 0x3 (14), CS0 & !CS1 */
+MXC_DCD_ITEM(65, MMDC_P0_BASE_ADDR + 0x000, 0x83190000)
+#elif defined(CONFIG_DDR_32BIT_1GB)
+/* DSIZ = 0x1 (32), BL = 0x1 (8), COL = 0x1 (10), ROW = 0x3 (14), CS0 & CS1 */
+MXC_DCD_ITEM(65, MMDC_P0_BASE_ADDR + 0x000, 0xC3190000)
 #else
 # error "DRAM data bus width must be defined!"
 #endif /* CONFIG_DDR_16BIT */
 
-# Initialize 2GB DDR3 - Micron MT41J128M
-# MR2
-MXC_DCD_ITEM(76, MMDC_P0_BASE_ADDR + 0x01c, 0x04008032)
-MXC_DCD_ITEM(77, MMDC_P0_BASE_ADDR + 0x01c, 0x0400803a)
-# MR3
-MXC_DCD_ITEM(78, MMDC_P0_BASE_ADDR + 0x01c, 0x00008033)
-MXC_DCD_ITEM(79, MMDC_P0_BASE_ADDR + 0x01c, 0x0000803b)
-# MR1
-MXC_DCD_ITEM(80, MMDC_P0_BASE_ADDR + 0x01c, 0x00428031)
-MXC_DCD_ITEM(81, MMDC_P0_BASE_ADDR + 0x01c, 0x00428039)
-# MR0
-MXC_DCD_ITEM(82, MMDC_P0_BASE_ADDR + 0x01c, 0x07208030)
-MXC_DCD_ITEM(83, MMDC_P0_BASE_ADDR + 0x01c, 0x07208038)
-# ZQ calibration
-MXC_DCD_ITEM(84, MMDC_P0_BASE_ADDR + 0x01c, 0x04008040)
-MXC_DCD_ITEM(85, MMDC_P0_BASE_ADDR + 0x01c, 0x04008048)
-# final DDR setup
-MXC_DCD_ITEM(86, MMDC_P0_BASE_ADDR + 0x020, 0x00005800)
-MXC_DCD_ITEM(87, MMDC_P0_BASE_ADDR + 0x818, 0x00022227)
-MXC_DCD_ITEM(88, MMDC_P1_BASE_ADDR + 0x818, 0x00022227)
-MXC_DCD_ITEM(89, MMDC_P0_BASE_ADDR + 0x004, 0x0002556d)
-MXC_DCD_ITEM(90, MMDC_P1_BASE_ADDR + 0x004, 0x00011006)
-MXC_DCD_ITEM(91, MMDC_P0_BASE_ADDR + 0x01c, 0x00000000)
+/* MDSCR
+ * CMD_BA	= 0x2 (MR2)
+ * CMD_CS	= 0,1 (first command for CS0, second - CS1)
+ * CMD		= 0x3 (Load mode register)
+ * WL_EN	= 0 (stay in normal mode)
+ * MRR_READ_DATA_VALID	= 0 (irrelevant for DDR3)
+ * CON_ACK	= 0 (RO field)
+ * CON_REQ	= 1 (we're in config mode)
+ * CMD_ADDR_LSB_MR_ADDR	= 0x8 (CWL = 0x1, ASR = 0, SRT = 0)
+ * CMD_ADDR_MSB_MR_OP	= 0 (RTT(WR) = 0 is Micron recommended value)
+ */
+MXC_DCD_ITEM(66, MMDC_P0_BASE_ADDR + 0x01c, 0x00088032)
+MXC_DCD_ITEM(67, MMDC_P0_BASE_ADDR + 0x01c, 0x0008803A)
+
+/* MDSCR
+ * CMD_BA	= 0x3 (MR3)
+ * CMD_CS	= 0,1 (first command for CS0, second - CS1)
+ * CMD		= 0x3 (Load mode register)
+ * WL_EN	= 0 (stay in normal mode)
+ * MRR_READ_DATA_VALID	= 0 (irrelevant for DDR3)
+ * CON_ACK	= 0 (RO field)
+ * CON_REQ	= 1 (we're in config mode)
+ * CMD_ADDR_LSB_MR_ADDR	= 0 (MPR_RF = 0, MPR = 0)
+ * CMD_ADDR_MSB_MR_OP	= 0 (reserved)
+ */
+MXC_DCD_ITEM(68, MMDC_P0_BASE_ADDR + 0x01c, 0x00008033)
+MXC_DCD_ITEM(69, MMDC_P0_BASE_ADDR + 0x01c, 0x0000803B)
+
+/* MDSCR
+ * CMD_BA	= 0x1 (MR1)
+ * CMD_CS	= 0,1 (first command for CS0, second - CS1)
+ * CMD		= 0x3 (Load mode register)
+ * WL_EN	= 0 (stay in normal mode)
+ * MRR_READ_DATA_VALID	= 0 (irrelevant for DDR3)
+ * CON_ACK	= 0 (RO field)
+ * CON_REQ	= 1 (we're in config mode)
+ * CMD_ADDR_LSB_MR_ADDR	= 0 (DLL = 0, ODS = 0x1 (34OHM),
+ *	RTT[0-1] = 0x1 (60OHM), AL = 0, WL = 0)
+ * CMD_ADDR_MSB_MR_OP	= 0 (RTT[2] = 0, TDQS = 0, QOff = 0 (enabled))
+ */
+MXC_DCD_ITEM(70, MMDC_P0_BASE_ADDR + 0x01c, 0x00068031)
+MXC_DCD_ITEM(71, MMDC_P0_BASE_ADDR + 0x01c, 0x00068039)
+
+/* MDSCR
+ * CMD_BA	= 0 (MR0)
+ * CMD_CS	= 0,1 (first command for CS0, second - CS1)
+ * CMD		= 0x3 (Load mode register)
+ * WL_EN	= 0 (stay in normal mode)
+ * MRR_READ_DATA_VALID	= 0 (irrelevant for DDR3)
+ * CON_ACK	= 0 (RO field)
+ * CON_REQ	= 1 (we're in config mode)
+ * CMD_ADDR_LSB_MR_ADDR	= 0x40 (BL = 0, CL = 0x8 (8 cycles), BT = 0)
+ * CMD_ADDR_MSB_MR_OP	= 0x9 (DLL = 1 (reset DLL), WR = 0x4 (8), PD = 0)
+ */
+MXC_DCD_ITEM(72, MMDC_P0_BASE_ADDR + 0x01c, 0x09408030)
+MXC_DCD_ITEM(73, MMDC_P0_BASE_ADDR + 0x01c, 0x09408038)
+
+/* MDSCR
+ * CMD_BA	= 0 (ignored )
+ * CMD_CS	= 0,1 (first command for CS0, second - CS1)
+ * CMD		= 0x4 (ZQ calibration)
+ * WL_EN	= 0 (ignored)
+ * MRR_READ_DATA_VALID	= 0 (irrelevant for DDR3)
+ * CON_ACK	= 0 (RO field)
+ * CON_REQ	= 1 (we're in config mode)
+ * CMD_ADDR_LSB_MR_ADDR	= 0 (must be 0)
+ * CMD_ADDR_MSB_MR_OP	= 0x4 (can be 0 for ZQCS or 0x4 for ZQCL)
+ */
+MXC_DCD_ITEM(74, MMDC_P0_BASE_ADDR + 0x01c, 0x04008040)
+MXC_DCD_ITEM(75, MMDC_P0_BASE_ADDR + 0x01c, 0x04008048)
+
+/* MDREF
+ * START_REF	= 0 (do not start a refresh cycle)
+ * REFR		= 0x7 (8 refreshes) ?
+ * REF_SEL	= 0x1 (use 32KHz)
+ * REF_CNT	= 0 (not used)
+ */
+MXC_DCD_ITEM(76, MMDC_P0_BASE_ADDR + 0x020, 0x00007800)
+
+/* MPODTCTRL
+ * ODT_WR_PAS_EN	= 0x1 (Inactive CS ODT enabled during write)
+ * ODT_WR_ACT_EN	= 0x1 (Active CS ODT enabled during write)
+ * ODT_RD_PAS_EN	= 0x1 (Inactive CS ODT enabled during read)
+ * ODT_RD_ACT_EN	= 0 (Active CS ODT disabled during read)
+ * ODT0_INT_RES		= 0x2 (i.MX RTT for byte 0/4 - 60OHM)
+ * ODT1_INT_RES		= 0x2 (i.MX RTT for byte 1/5 - 60OHM)
+ * ODT2_INT_RES		= 0x2 (i.MX RTT for byte 2/6 - 60OHM)
+ * ODT3_INT_RES		= 0x2 (i.MX RTT for byte 3/7 - 60OHM)
+ */
+MXC_DCD_ITEM(77, MMDC_P0_BASE_ADDR + 0x818, 0x00022227)
+
+/* MDPDC
+ * tCKSRE	= 0x5 (5 cycles)
+ * tCKSRX	= 0x5 (5 cycles)
+ * BOTH_CS_PD	= 0x1
+ * SLOW_PD	= 0x1 (slow mode)
+ * PWDT_0	= 0x5 (256 cycles)
+ * PWDT_1	= 0x5 (256 cycles)
+ * tCKE		= 0x2 (3 cycles)
+ * PRCT_0	= 0 (disabled) ?
+ * PRCT_1	= 0 (disabled) ?
+ */
+MXC_DCD_ITEM(78, MMDC_P0_BASE_ADDR + 0x004, 0x000255ED)
+
+/* MAPSR
+ * PSD		= 0 (enabled)
+ * PSS		= 0 (ro)
+ * RIS		= 0 (ro)
+ * WIS		= 0 (ro)
+ * PST		= 0x10 (1024 cycles)
+ * LPMD		= 0 (do not request lpmd)
+ * DVFS		= 0 (do not request dvfs)
+ * LPACK	= 0 (ro)
+ * DVACK	= 0 (ro)
+ */
+MXC_DCD_ITEM(79, MMDC_P0_BASE_ADDR + 0x404, 0x00001006)
+
+/* MDSCR - leave configuration mode */
+MXC_DCD_ITEM(80, MMDC_P0_BASE_ADDR + 0x01c, 0x00000000)
 
 #else /* CONFIG_MX6SOLO_DDR3 configuration */
 /* i.MX6 Quad/Dual DDR3 */
