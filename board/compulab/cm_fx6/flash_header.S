@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2010-2012 Freescale Semiconductor, Inc.
+ * Copyright (C) 2013-2014 CompuLab, Ltd.
+ *
+ * Author: Igor Grinberg <grinberg@compulab.co.il>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -13,8 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA 02111-1307 USA
+ * Foundation, Inc.
  */
 
 #include <config.h>
@@ -22,39 +23,40 @@
 
 #ifdef	CONFIG_FLASH_HEADER
 #ifndef CONFIG_FLASH_HEADER_OFFSET
-# error "Must define the offset of flash header"
+# error "CONFIG_FLASH_HEADER_OFFSET must be defined!"
 #endif
 
 /********************DCD mode***********************/
 #define CPU_2_BE_32(l) \
-       ((((l) & 0x000000FF) << 24) | \
-	(((l) & 0x0000FF00) << 8)  | \
-	(((l) & 0x00FF0000) >> 8)  | \
-	(((l) & 0xFF000000) >> 24))
+	((((l) & 0x000000FF) << 24) | \
+	 (((l) & 0x0000FF00) << 8)  | \
+	 (((l) & 0x00FF0000) >> 8)  | \
+	 (((l) & 0xFF000000) >> 24))
 
-#define MXC_DCD_ITEM(i, addr, val)   \
-dcd_node_##i:                        \
-        .word CPU_2_BE_32(addr) ;     \
-        .word CPU_2_BE_32(val)  ;     \
+#define MXC_DCD_ITEM(i, addr, val)	\
+dcd_node_##i:				\
+	.word CPU_2_BE_32(addr);	\
+	.word CPU_2_BE_32(val);
 
 .section ".text.flasheader", "x"
 	b	_start
 	.org	CONFIG_FLASH_HEADER_OFFSET
 
-ivt_header:       .word 0x402000D1 /* Tag=0xD1, Len=0x0020, Ver=0x40 */
-app_code_jump_v:  .word _start
-reserv1:          .word 0x0
-dcd_ptr:          .word dcd_hdr
-boot_data_ptr:	  .word boot_data
-self_ptr:         .word ivt_header
-app_code_csf:     .word 0x0
-reserv2:          .word 0x0
+ivt_header:		.word 0x402000D1 /* Tag=0xD1, Len=0x0020, Ver=0x40 */
+app_code_jump_v:	.word _start
+reserv1:		.word 0x0
+dcd_ptr:		.word dcd_hdr
+boot_data_ptr:		.word boot_data
+self_ptr:		.word ivt_header
+app_code_csf:		.word 0x0
+reserv2:		.word 0x0
 
-boot_data:        .word TEXT_BASE
-image_len:        .word _end_of_copy  - TEXT_BASE + CONFIG_FLASH_HEADER_OFFSET
-plugin:           .word 0x0
+boot_data:	.word TEXT_BASE
+image_len:	.word _end_of_copy - TEXT_BASE + CONFIG_FLASH_HEADER_OFFSET
+plugin:		.word 0x0
 
 #ifdef CONFIG_MX6SOLO_DDR3
+/* i.MX6 Dual Lite/Solo DDR3 configuration */
 dcd_hdr:          .word 0x40E002D2 /* Tag=0xD2, Len=91*8 + 4 + 4, Ver=0x40 */
 write_dcd_cmd:    .word 0x04DC02CC /* Tag=0xCC, Len=91*8 + 4, Param=0x04 */
 
@@ -153,6 +155,7 @@ MXC_DCD_ITEM(71, MMDC_P0_BASE_ADDR + 0x01c, 0x00008000)
 MXC_DCD_ITEM(72, MMDC_P0_BASE_ADDR + 0x02c, 0x000026d2)
 MXC_DCD_ITEM(73, MMDC_P0_BASE_ADDR + 0x030, 0x00440e21)
 MXC_DCD_ITEM(74, MMDC_P0_BASE_ADDR + 0x040, 0x0000003f)
+
 #ifdef CONFIG_DDR_16BIT
 MXC_DCD_ITEM(75, MMDC_P0_BASE_ADDR + 0x000, 0x83180000)
 #elif defined(CONFIG_DDR_32BIT)
