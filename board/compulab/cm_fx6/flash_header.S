@@ -199,7 +199,7 @@ write_dcd_cmd1:	.word 0x043C01CC /* Tag=0xCC, Len=39*8 + 4, Param=0x04 */
 /* IOMUXC_BASE_ADDR  = 0x20e0000 */
 
 /* SDQS[0-7]_P
- * DSE	= 0x5 (48OHM)
+ * DSE	= 0x7 (34OHM)
  * ODT	= 0 (disabled)
  * PKE	= 0 (disabled)
  * PUE	= 0 (keeper)
@@ -232,7 +232,13 @@ MXC_DCD_ITEM(18, IOMUXC_BASE_ADDR + 0x578, 0x00000038)
 MXC_DCD_ITEM(19, IOMUXC_BASE_ADDR + 0x588, 0x00000038)
 MXC_DCD_ITEM(20, IOMUXC_BASE_ADDR + 0x594, 0x00000038)
 
-/* Control: RESET, SDCKE0, SDCKE1, SDBA2 */
+/*
+ * Below DRAM_RESET[DDR_SEL] = 0 which is incorrect according to
+ * Freescale QRM, but this is exactly the value used by the automatic
+ * calibration script and it works also in all our tests, so we leave
+ * it as is at this point.
+ */
+/* Control: RESET, SDBA2 */
 MXC_DCD_ITEM(21, IOMUXC_BASE_ADDR + 0x57c, 0x00000038)
 MXC_DCD_ITEM(22, IOMUXC_BASE_ADDR + 0x58c, 0x00000000)
 
@@ -362,7 +368,7 @@ MXC_DCD_ITEM(63, MMDC_P0_BASE_ADDR + 0x004, 0x00020036)
  */
 MXC_DCD_ITEM(64, MMDC_P0_BASE_ADDR + 0x008, 0x09444040)
 
-/* MDCFG[0-2]
+/* MDCFG0
  * tRFC	  = 0x8A (139CK = ~260ns)
  * tXS	  = 0x8F (144CK = ~270ns)
  * tXP	  = 0x3 (4CK = ~7.5ns)
@@ -371,7 +377,8 @@ MXC_DCD_ITEM(64, MMDC_P0_BASE_ADDR + 0x008, 0x09444040)
  * tCL	  = 0x5 (8 cycles)
  */
 MXC_DCD_ITEM(65, MMDC_P0_BASE_ADDR + 0x00c, 0x8A8F79A5)
-/*
+
+/* MDCFG1
  * tCWL	  = 0x4 (6 cycles)
  * tMRD	  = 0xB (12CK = ~22.5ns)
  * tWR	  = 0x7 (8 cycles = 15ns)
@@ -382,7 +389,8 @@ MXC_DCD_ITEM(65, MMDC_P0_BASE_ADDR + 0x00c, 0x8A8F79A5)
  * tRCD	  = 0x7 (8CK = 15ns)
  */
 MXC_DCD_ITEM(66, MMDC_P0_BASE_ADDR + 0x010, 0xFF738F64)
-/*
+
+/* MDCFG2
  * tRRD	  = 0x5 (6 cycles = 10ns)
  * tWTR	  = 0x3 (4 cycles = 7.5ns)
  * tRTP	  = 0x3 (4 cycles = 7.5ns)
@@ -445,7 +453,7 @@ MXC_DCD_ITEM(72, MMDC_P0_BASE_ADDR + 0x000, 0xC31A0000)
 MXC_DCD_ITEM(72, MMDC_P0_BASE_ADDR + 0x000, 0xC41A0000)
 #else
 # error "DRAM data bus width must be defined!"
-#endif
+#endif /* CONFIG_DDR_16BIT */
 
 /* MDSCR
  * CMD_BA	= 0x2 (MR2)
@@ -460,7 +468,8 @@ MXC_DCD_ITEM(72, MMDC_P0_BASE_ADDR + 0x000, 0xC41A0000)
  */
 MXC_DCD_ITEM(73, MMDC_P0_BASE_ADDR + 0x01c, 0x00088032)
 MXC_DCD_ITEM(74, MMDC_P0_BASE_ADDR + 0x01c, 0x0008803A)
-/*
+
+/* MDSCR
  * CMD_BA	= 0x3 (MR3)
  * CMD_CS	= 0,1 (first command for CS0, second - CS1)
  * CMD		= 0x3 (Load mode register)
@@ -473,7 +482,8 @@ MXC_DCD_ITEM(74, MMDC_P0_BASE_ADDR + 0x01c, 0x0008803A)
  */
 MXC_DCD_ITEM(75, MMDC_P0_BASE_ADDR + 0x01c, 0x00008033)
 MXC_DCD_ITEM(76, MMDC_P0_BASE_ADDR + 0x01c, 0x0000803B)
-/*
+
+/* MDSCR
  * CMD_BA	= 0x1 (MR1)
  * CMD_CS	= 0,1 (first command for CS0, second - CS1)
  * CMD		= 0x3 (Load mode register)
@@ -487,7 +497,8 @@ MXC_DCD_ITEM(76, MMDC_P0_BASE_ADDR + 0x01c, 0x0000803B)
  */
 MXC_DCD_ITEM(77, MMDC_P0_BASE_ADDR + 0x01c, 0x00068031)
 MXC_DCD_ITEM(78, MMDC_P0_BASE_ADDR + 0x01c, 0x00068039)
-/*
+
+/* MDSCR
  * CMD_BA	= 0 (MR0)
  * CMD_CS	= 0,1 (first command for CS0, second - CS1)
  * CMD		= 0x3 (Load mode register)
@@ -500,7 +511,8 @@ MXC_DCD_ITEM(78, MMDC_P0_BASE_ADDR + 0x01c, 0x00068039)
  */
 MXC_DCD_ITEM(79, MMDC_P0_BASE_ADDR + 0x01c, 0x09408030)
 MXC_DCD_ITEM(80, MMDC_P0_BASE_ADDR + 0x01c, 0x09408038)
-/*
+
+/* MDSCR
  * CMD_BA	= 0 (ignored )
  * CMD_CS	= 0,1 (first command for CS0, second - CS1)
  * CMD		= 0x4 (ZQ calibration)
