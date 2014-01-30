@@ -20,7 +20,7 @@
  */
 
 #define CONFIG_MX6Q
-#define CONFIG_DDR_32BIT
+#define CONFIG_DDR_32BIT_512MB
 #define CONFIG_NR_DRAM_BANKS	1
 #define PHYS_SDRAM_1_SIZE	(512 << 20)	/* 512MB */
 
