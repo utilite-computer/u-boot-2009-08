@@ -227,96 +227,75 @@ static void cm_fx6_setup_uart(void)
 					 ARRAY_SIZE(cm_fx6_uart4_pads));
 }
 
-#ifdef CONFIG_VIDEO_MX5
-#ifdef CONFIG_I2C_MXC
-static void setup_i2c(unsigned int module_base)
+#if defined CONFIG_I2C_MXC
+#if defined CONFIG_MX6Q
+static iomux_v3_cfg_t cm_fx6_i2c1_pads[] = {
+	MX6Q_PAD_EIM_D21__I2C1_SCL,
+	MX6Q_PAD_EIM_D28__I2C1_SDA,
+};
+
+static iomux_v3_cfg_t cm_fx6_i2c2_pads[] = {
+	MX6Q_PAD_KEY_COL3__I2C2_SCL,
+	MX6Q_PAD_KEY_ROW3__I2C2_SDA,
+};
+
+static iomux_v3_cfg_t cm_fx6_i2c3_pads[] = {
+	MX6Q_PAD_GPIO_3__I2C3_SCL,
+	MX6Q_PAD_GPIO_6__I2C3_SDA,
+};
+#elif defined CONFIG_MX6DL
+static iomux_v3_cfg_t cm_fx6_i2c1_pads[] = {
+	MX6DL_PAD_EIM_D21__I2C1_SCL,
+	MX6DL_PAD_EIM_D28__I2C1_SDA,
+};
+
+static iomux_v3_cfg_t cm_fx6_i2c2_pads[] = {
+	MX6DL_PAD_KEY_COL3__I2C2_SCL,
+	MX6DL_PAD_KEY_ROW3__I2C2_SDA,
+};
+
+static iomux_v3_cfg_t cm_fx6_i2c3_pads[] = {
+	MX6DL_PAD_GPIO_3__I2C3_SCL,
+	MX6DL_PAD_GPIO_6__I2C3_SDA,
+};
+#endif /* CONFIG_MX6Q */
+
+static void cm_fx6_setup_i2c(unsigned int module_base)
 {
 	unsigned int reg;
 
 	switch (module_base) {
-	case I2C1_BASE_ADDR:
-	#if defined CONFIG_MX6Q
-		/* i2c1 SDA */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_CSI0_DAT8__I2C1_SDA);
-
-		/* i2c1 SCL */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_CSI0_DAT9__I2C1_SCL);
-	#elif defined CONFIG_MX6DL
-		/* i2c1 SDA */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_CSI0_DAT8__I2C1_SDA);
-
-		/* i2c1 SCL */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_CSI0_DAT9__I2C1_SCL);
-	#endif
-		/* Enable i2c clock */
-		reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR2);
-		reg |= 0xC0;
-		writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR2);
-
-		break;
-	case I2C2_BASE_ADDR:
-	#if defined CONFIG_MX6Q
-		/* i2c2 SDA */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_KEY_ROW3__I2C2_SDA);
-
-		/* i2c2 SCL */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_KEY_COL3__I2C2_SCL);
-	#elif defined CONFIG_MX6DL
-		/* i2c2 SDA */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_KEY_ROW3__I2C2_SDA);
-
-		/* i2c2 SCL */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_KEY_COL3__I2C2_SCL);
-	#endif
-
-		/* Enable i2c clock */
-		reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR2);
-		reg |= 0x300;
-		writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR2);
-
-		break;
-	case I2C3_BASE_ADDR:
-	#if defined CONFIG_MX6Q
-		/* GPIO_3 for I2C3_SCL */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_3__I2C3_SCL);
-
-		/* GPIO_6 for I2C3_SDA */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_6__I2C3_SDA);
-	#elif defined CONFIG_MX6DL
-		/* GPIO_3 for I2C3_SCL */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_GPIO_3__I2C3_SCL);
-
-		/* GPIO_6 for I2C3_SDA */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_GPIO_6__I2C3_SDA);
-	#endif
-
-		/* Enable i2c clock */
-		reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR2);
-		reg |= 0xC00;
-		writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR2);
-
-		break;
-	default:
-		printf("Invalid I2C base: 0x%x\n", module_base);
-		break;
+		case I2C1_BASE_ADDR:
+			mxc_iomux_v3_setup_multiple_pads(cm_fx6_i2c1_pads,
+						 ARRAY_SIZE(cm_fx6_i2c1_pads));
+			/* Enable i2c clock */
+			reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR2);
+			reg |= 0xC0;
+			writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR2);
+			break;
+		case I2C2_BASE_ADDR:
+			mxc_iomux_v3_setup_multiple_pads(cm_fx6_i2c2_pads,
+						 ARRAY_SIZE(cm_fx6_i2c2_pads));
+			/* Enable i2c clock */
+			reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR2);
+			reg |= 0x300;
+			writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR2);
+			break;
+		case I2C3_BASE_ADDR:
+			mxc_iomux_v3_setup_multiple_pads(cm_fx6_i2c3_pads,
+						 ARRAY_SIZE(cm_fx6_i2c3_pads));
+			/* Enable i2c clock */
+			reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR2);
+			reg |= 0xC00;
+			writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR2);
+			break;
+		default:
+			printf("Invalid I2C base: 0x%x\n", module_base);
 	}
 }
-
-void setup_lvds_poweron(void)
-{
-	uchar value;
-	i2c_init(CONFIG_SYS_I2C_SPEED, CONFIG_SYS_I2C_SLAVE);
-
-	i2c_read(0x1f, 3, 1, &value, 1);
-	value &= ~0x2;
-	i2c_write(0x1f, 3, 1, &value, 1);
-
-	i2c_read(0x1f, 1, 1, &value, 1);
-	value |= 0x2;
-	i2c_write(0x1f, 1, 1, &value, 1);
-}
-#endif
-#endif
+#else /* CONFIG_I2C_MXC */
+static inline void cm_fx6_setup_i2c(unsigned int module_base) {}
+#endif /* CONFIG_I2C_MXC */
 
 #ifdef CONFIG_IMX_ECSPI
 s32 spi_get_cfg(struct imx_spi_dev_t *dev)
@@ -717,13 +696,6 @@ int board_init(void)
 #endif
 
 #ifdef CONFIG_VIDEO_MX5
-
-#ifdef CONFIG_I2C_MXC
-	setup_i2c(CONFIG_SYS_I2C_PORT);
-	/* Enable lvds power */
-	setup_lvds_poweron();
-#endif
-
 	panel_info_init();
 
 	gd->fb_base = CONFIG_FB_BASE;
@@ -746,6 +718,8 @@ int check_recovery_cmd_file(void)
 
 int board_late_init(void)
 {
+	cm_fx6_setup_i2c(CONFIG_SYS_I2C_PORT);
+
 	return 0;
 }
 
