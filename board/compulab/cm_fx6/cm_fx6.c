@@ -368,8 +368,8 @@ void spi_io_init(struct imx_spi_dev_t *dev)
 }
 #endif /* CONFIG_IMX_ECSPI */
 
-#ifdef CONFIG_NAND_GPMI
-#if defined CONFIG_MX6Q
+#if defined(CONFIG_NAND_GPMI)
+#if defined(CONFIG_MX6Q)
 static iomux_v3_cfg_t cm_fx6_nfc_pads[] = {
 	MX6Q_PAD_NANDF_CLE__RAWNAND_CLE,
 	MX6Q_PAD_NANDF_ALE__RAWNAND_ALE,
@@ -386,7 +386,7 @@ static iomux_v3_cfg_t cm_fx6_nfc_pads[] = {
 	MX6Q_PAD_SD4_CMD__RAWNAND_RDN,
 	MX6Q_PAD_SD4_CLK__RAWNAND_WRN,
 };
-#elif defined CONFIG_MX6DL
+#elif defined(CONFIG_MX6DL)
 static iomux_v3_cfg_t cm_fx6_nfc_pads[] = {
 	MX6DL_PAD_NANDF_CLE__RAWNAND_CLE,
 	MX6DL_PAD_NANDF_ALE__RAWNAND_ALE,
@@ -403,9 +403,9 @@ static iomux_v3_cfg_t cm_fx6_nfc_pads[] = {
 	MX6DL_PAD_SD4_CMD__RAWNAND_RDN,
 	MX6DL_PAD_SD4_CLK__RAWNAND_WRN,
 };
-#endif
+#endif /* CONFIG_MX6Q */
 
-static void setup_gpmi_nand(void)
+static void cm_fx6_setup_gpmi_nand(void)
 {
 	unsigned int reg;
 
@@ -429,7 +429,9 @@ static void setup_gpmi_nand(void)
 	reg |= 0x0030;
 	writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR0);
 }
-#endif
+#else
+static inline void cm_fx6_setup_gpmi_nand(void) {}
+#endif /* CONFIG_NAND_GPMI */
 
 #ifdef CONFIG_NET_MULTI
 int board_eth_init(bd_t *bis)
@@ -683,15 +685,12 @@ int board_init(void)
 
 	cm_fx6_setup_uart();
 	cm_fx6_setup_sata();
+	cm_fx6_setup_gpmi_nand();
 
 #ifdef CONFIG_VIDEO_MX5
 	panel_info_init();
 
 	gd->fb_base = CONFIG_FB_BASE;
-#endif
-
-#ifdef CONFIG_NAND_GPMI
-	setup_gpmi_nand();
 #endif
 	return 0;
 }
