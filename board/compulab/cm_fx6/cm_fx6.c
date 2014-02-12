@@ -299,7 +299,7 @@ static void cm_fx6_setup_i2c(unsigned int module_base)
 static inline void cm_fx6_setup_i2c(unsigned int module_base) {}
 #endif /* CONFIG_I2C_MXC */
 
-#ifdef CONFIG_IMX_ECSPI
+#if defined(CONFIG_IMX_ECSPI)
 s32 spi_get_cfg(struct imx_spi_dev_t *dev)
 {
 	switch (dev->slave.cs) {
@@ -328,55 +328,45 @@ s32 spi_get_cfg(struct imx_spi_dev_t *dev)
 	return 0;
 }
 
+#if defined(CONFIG_MX6Q)
+static iomux_v3_cfg_t cm_fx6_spi1_pads[] = {
+	MX6Q_PAD_EIM_D16__ECSPI1_SCLK,
+	MX6Q_PAD_EIM_D17__ECSPI1_MISO,
+	MX6Q_PAD_EIM_D18__ECSPI1_MOSI,
+	MX6Q_PAD_EIM_EB2__ECSPI1_SS0,
+	MX6Q_PAD_EIM_D19__ECSPI1_SS1,
+};
+#elif defined(CONFIG_MX6DL)
+static iomux_v3_cfg_t cm_fx6_spi1_pads[] = {
+	MX6DL_PAD_EIM_D16__ECSPI1_SCLK,
+	MX6DL_PAD_EIM_D17__ECSPI1_MISO,
+	MX6DL_PAD_EIM_D18__ECSPI1_MOSI,
+	MX6DL_PAD_EIM_EB2__ECSPI1_SS0,
+	MX6DL_PAD_EIM_D19__ECSPI1_SS1,
+};
+#endif
+
 void spi_io_init(struct imx_spi_dev_t *dev)
 {
 	u32 reg;
 
 	switch (dev->base) {
-	case ECSPI1_BASE_ADDR:
-		/* Enable clock */
-		reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR1);
-		reg |= 0x3;
-		writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR1);
-	#if defined CONFIG_MX6Q
-		/* SCLK */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_EIM_D16__ECSPI1_SCLK);
-
-		/* MISO */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_EIM_D17__ECSPI1_MISO);
-
-		/* MOSI */
-		mxc_iomux_v3_setup_pad(MX6Q_PAD_EIM_D18__ECSPI1_MOSI);
-
-		if (dev->ss == 0)
-			mxc_iomux_v3_setup_pad(MX6Q_PAD_EIM_EB2__ECSPI1_SS0);
-		else if (dev->ss == 1)
-			mxc_iomux_v3_setup_pad(MX6Q_PAD_EIM_D19__ECSPI1_SS1);
-	#elif defined CONFIG_MX6DL
-		/* SCLK */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_EIM_D16__ECSPI1_SCLK);
-
-		/* MISO */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_EIM_D17__ECSPI1_MISO);
-
-		/* MOSI */
-		mxc_iomux_v3_setup_pad(MX6DL_PAD_EIM_D18__ECSPI1_MOSI);
-
-		if (dev->ss == 0)
-			mxc_iomux_v3_setup_pad(MX6DL_PAD_EIM_EB2__ECSPI1_SS0);
-		else if (dev->ss == 1)
-			mxc_iomux_v3_setup_pad(MX6DL_PAD_EIM_D19__ECSPI1_SS1);
-	#endif
-		break;
-	case ECSPI2_BASE_ADDR:
-	case ECSPI3_BASE_ADDR:
-		/* ecspi2-3 fall through */
-		break;
-	default:
-		break;
+		case ECSPI1_BASE_ADDR:
+			/* Enable clock */
+			reg = readl(CCM_BASE_ADDR + CLKCTL_CCGR1);
+			reg |= 0x3;
+			writel(reg, CCM_BASE_ADDR + CLKCTL_CCGR1);
+			mxc_iomux_v3_setup_multiple_pads(cm_fx6_spi1_pads,
+						ARRAY_SIZE(cm_fx6_spi1_pads));
+			break;
+		case ECSPI2_BASE_ADDR:
+		case ECSPI3_BASE_ADDR:
+			/* ecspi2-3 fall through */
+			break;
+		default:;
 	}
 }
-#endif
+#endif /* CONFIG_IMX_ECSPI */
 
 #ifdef CONFIG_NAND_GPMI
 #if defined CONFIG_MX6Q
