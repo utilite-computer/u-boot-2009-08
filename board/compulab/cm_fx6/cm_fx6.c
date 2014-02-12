@@ -88,35 +88,34 @@ static inline void setup_boot_device(void)
 	uint bt_mem_type = (soc_sbmr & 0x00000008) >> 3;
 
 	switch (bt_mem_ctl) {
-	case 0x0:
-		if (bt_mem_type)
-			boot_dev = ONE_NAND_BOOT;
-		else
-			boot_dev = WEIM_NOR_BOOT;
-		break;
-	case 0x2:
+		case 0x0:
+			if (bt_mem_type)
+				boot_dev = ONE_NAND_BOOT;
+			else
+				boot_dev = WEIM_NOR_BOOT;
+			break;
+		case 0x2:
 			boot_dev = SATA_BOOT;
-		break;
-	case 0x3:
-		if (bt_mem_type)
-			boot_dev = I2C_BOOT;
-		else
-			boot_dev = SPI_NOR_BOOT;
-		break;
-	case 0x4:
-	case 0x5:
-		boot_dev = SD_BOOT;
-		break;
-	case 0x6:
-	case 0x7:
-		boot_dev = MMC_BOOT;
-		break;
-	case 0x8 ... 0xf:
-		boot_dev = NAND_BOOT;
-		break;
-	default:
-		boot_dev = UNKNOWN_BOOT;
-		break;
+			break;
+		case 0x3:
+			if (bt_mem_type)
+				boot_dev = I2C_BOOT;
+			else
+				boot_dev = SPI_NOR_BOOT;
+			break;
+		case 0x4:
+		case 0x5:
+			boot_dev = SD_BOOT;
+			break;
+		case 0x6:
+		case 0x7:
+			boot_dev = MMC_BOOT;
+			break;
+		case 0x8 ... 0xf:
+			boot_dev = NAND_BOOT;
+			break;
+		default:
+			boot_dev = UNKNOWN_BOOT;
 	}
 }
 
