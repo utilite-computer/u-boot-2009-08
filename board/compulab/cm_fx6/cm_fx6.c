@@ -21,54 +21,31 @@
  */
 
 #include <common.h>
+#include <i2c.h>
+#include <mmc.h>
+
 #include <asm/io.h>
+#include <asm/errno.h>
+#include <asm/gpio.h>
+#include <asm/arch/gpio.h>
 #include <asm/arch/mx6.h>
 #include <asm/arch/mx6_pins.h>
-#if defined(CONFIG_SECURE_BOOT)
-#include <asm/arch/mx6_secure.h>
-#endif
 #include <asm/arch/mx6dl_pins.h>
 #include <asm/arch/iomux-v3.h>
-#include <asm/errno.h>
-#ifdef CONFIG_MXC_FEC
+
 #include <miiphy.h>
-#endif
+
+#include <imx_spi.h>
+#include <fsl_esdhc.h>
+
 #if defined(CONFIG_VIDEO_MX5)
 #include <linux/list.h>
 #include <linux/fb.h>
 #include <linux/mxcfb.h>
 #include <ipu.h>
-#endif
-#ifdef CONFIG_VIDEO_MX5
 #include <lcd.h>
 #endif
 
-#ifdef CONFIG_IMX_ECSPI
-#include <imx_spi.h>
-#endif
-
-#ifdef CONFIG_I2C_MXC
-#include <i2c.h>
-#endif
-
-#ifdef CONFIG_CMD_MMC
-#include <mmc.h>
-#include <fsl_esdhc.h>
-#endif
-
-#ifdef CONFIG_ARCH_MMU
-#include <asm/mmu.h>
-#include <asm/arch/mmu.h>
-#endif
-
-#ifdef CONFIG_CMD_CLOCK
-#include <asm/clock.h>
-#endif
-
-#ifdef CONFIG_MXC_GPIO
-#include <asm/gpio.h>
-#include <asm/arch/gpio.h>
-#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
