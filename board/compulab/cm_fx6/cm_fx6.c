@@ -209,21 +209,22 @@ int dram_init(void)
 	return 0;
 }
 
-static void setup_uart(void)
-{
 #if defined CONFIG_MX6Q
-	/* UART4 TXD */
-	mxc_iomux_v3_setup_pad(MX6Q_PAD_KEY_COL0__UART4_TXD);
-
-	/* UART4 RXD */
-	mxc_iomux_v3_setup_pad(MX6Q_PAD_KEY_ROW0__UART4_RXD);
+static iomux_v3_cfg_t cm_fx6_uart4_pads[] = {
+	MX6Q_PAD_KEY_COL0__UART4_TXD,
+	MX6Q_PAD_KEY_ROW0__UART4_RXD,
+};
 #elif defined CONFIG_MX6DL
-	/* UART4 TXD */
-	mxc_iomux_v3_setup_pad(MX6DL_PAD_KEY_COL0__UART4_TXD);
+static iomux_v3_cfg_t cm_fx6_uart4_pads[] = {
+	MX6DL_PAD_KEY_COL0__UART4_TXD,
+	MX6DL_PAD_KEY_ROW0__UART4_RXD,
+};
+#endif /* CONFIG_MX6Q */
 
-	/* UART4 RXD */
-	mxc_iomux_v3_setup_pad(MX6DL_PAD_KEY_ROW0__UART4_RXD);
-#endif
+static void cm_fx6_setup_uart(void)
+{
+	mxc_iomux_v3_setup_multiple_pads(cm_fx6_uart4_pads,
+					 ARRAY_SIZE(cm_fx6_uart4_pads));
 }
 
 #ifdef CONFIG_VIDEO_MX5
@@ -709,7 +710,7 @@ int board_init(void)
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM_1 + 0x100;
 
-	setup_uart();
+	cm_fx6_setup_uart();
 
 #ifdef CONFIG_DWC_AHSATA
 	setup_sata();
