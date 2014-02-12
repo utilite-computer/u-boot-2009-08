@@ -158,8 +158,10 @@ int setup_sata(void)
 		if (readl(ANATOP_BASE_ADDR + 0xe0) & ANATOP_PLL_LOCK)
 			break;
 	}
+
 	if (timeout <= 0)
 		return -1;
+
 	reg &= ~ANATOP_PLL_BYPASS_MASK;
 	writel(reg, ANATOP_BASE_ADDR + 0xe0);
 	reg |= ANATOP_SATA_CLK_ENABLE_MASK;
@@ -396,7 +398,7 @@ void spi_io_init(struct imx_spi_dev_t *dev)
 
 #ifdef CONFIG_NAND_GPMI
 #if defined CONFIG_MX6Q
-iomux_v3_cfg_t nfc_pads[] = {
+static iomux_v3_cfg_t cm_fx6_nfc_pads[] = {
 	MX6Q_PAD_NANDF_CLE__RAWNAND_CLE,
 	MX6Q_PAD_NANDF_ALE__RAWNAND_ALE,
 	MX6Q_PAD_NANDF_CS0__RAWNAND_CE0N,
@@ -413,7 +415,7 @@ iomux_v3_cfg_t nfc_pads[] = {
 	MX6Q_PAD_SD4_CLK__RAWNAND_WRN,
 };
 #elif defined CONFIG_MX6DL
-iomux_v3_cfg_t nfc_pads[] = {
+static iomux_v3_cfg_t cm_fx6_nfc_pads[] = {
 	MX6DL_PAD_NANDF_CLE__RAWNAND_CLE,
 	MX6DL_PAD_NANDF_ALE__RAWNAND_ALE,
 	MX6DL_PAD_NANDF_CS0__RAWNAND_CE0N,
@@ -436,8 +438,8 @@ static void setup_gpmi_nand(void)
 	unsigned int reg;
 
 	/* config gpmi nand iomux */
-	mxc_iomux_v3_setup_multiple_pads(nfc_pads,
-			ARRAY_SIZE(nfc_pads));
+	mxc_iomux_v3_setup_multiple_pads(cm_fx6_nfc_pads,
+					 ARRAY_SIZE(cm_fx6_nfc_pads));
 
 	/* config gpmi and bch clock to 11Mhz*/
 	reg = readl(CCM_BASE_ADDR + CLKCTL_CS2CDR);
@@ -593,8 +595,8 @@ int board_mmc_init(bd_t *bis)
 {
 	if (!usdhc_gpio_init(bis))
 		return 0;
-	else
-		return -1;
+
+	return -1;
 }
 
 #endif /* CONFIG_CMD_MMC */
@@ -740,9 +742,6 @@ int check_recovery_cmd_file(void)
 	return 0;
 }
 #endif
-
-
-
 
 int board_late_init(void)
 {
