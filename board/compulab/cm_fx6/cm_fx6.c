@@ -129,8 +129,7 @@ u32 get_board_rev(void)
 	return 100;
 }
 
-#ifdef CONFIG_DWC_AHSATA
-
+#if defined(CONFIG_DWC_AHSATA)
 #define ANATOP_PLL_LOCK                 0x80000000
 #define ANATOP_PLL_ENABLE_MASK          0x00002000
 #define ANATOP_PLL_BYPASS_MASK          0x00010000
@@ -139,7 +138,7 @@ u32 get_board_rev(void)
 #define ANATOP_PLL_HOLD_RING_OFF_MASK   0x00000800
 #define ANATOP_SATA_CLK_ENABLE_MASK     0x00100000
 
-int setup_sata(void)
+static int cm_fx6_setup_sata(void)
 {
 	u32 reg = 0;
 	s32 timeout = 100000;
@@ -154,6 +153,7 @@ int setup_sata(void)
 	reg &= ~ANATOP_PLL_PWDN_MASK;
 	writel(reg, ANATOP_BASE_ADDR + 0xe0);
 	reg |= ANATOP_PLL_ENABLE_MASK;
+
 	while (timeout--) {
 		if (readl(ANATOP_BASE_ADDR + 0xe0) & ANATOP_PLL_LOCK)
 			break;
@@ -187,7 +187,9 @@ int setup_sata(void)
 
 	return 0;
 }
-#endif
+#else
+static inline int cm_fx6_setup_sata(void)
+#endif /* CONFIG_DWC_AHSATA */
 
 int dram_init(void)
 {
@@ -690,10 +692,7 @@ int board_init(void)
 	gd->bd->bi_boot_params = PHYS_SDRAM_1 + 0x100;
 
 	cm_fx6_setup_uart();
-
-#ifdef CONFIG_DWC_AHSATA
-	setup_sata();
-#endif
+	cm_fx6_setup_sata();
 
 #ifdef CONFIG_VIDEO_MX5
 	panel_info_init();
