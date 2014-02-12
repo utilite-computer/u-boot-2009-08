@@ -129,80 +129,6 @@ u32 get_board_rev(void)
 	return 100;
 }
 
-#ifdef CONFIG_ARCH_MMU
-void board_mmu_init(void)
-{
-	unsigned long ttb_base = PHYS_SDRAM_1 + 0x4000;
-	unsigned long i;
-
-	/*
-	* Set the TTB register
-	*/
-	asm volatile ("mcr  p15,0,%0,c2,c0,0" : : "r"(ttb_base) /*:*/);
-
-	/*
-	* Set the Domain Access Control Register
-	*/
-	i = ARM_ACCESS_DACR_DEFAULT;
-	asm volatile ("mcr  p15,0,%0,c3,c0,0" : : "r"(i) /*:*/);
-
-	/*
-	* First clear all TT entries - ie Set them to Faulting
-	*/
-	memset((void *)ttb_base, 0, ARM_FIRST_LEVEL_PAGE_TABLE_SIZE);
-	/* Actual   Virtual  Size   Attributes          Function */
-	/* Base     Base     MB     cached? buffered?  access permissions */
-	/* xxx00000 xxx00000 */
-	X_ARM_MMU_SECTION(0x000, 0x000, 0x001,
-			ARM_UNCACHEABLE, ARM_UNBUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW); /* ROM, 1M */
-	X_ARM_MMU_SECTION(0x001, 0x001, 0x008,
-			ARM_UNCACHEABLE, ARM_UNBUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW); /* 8M */
-	X_ARM_MMU_SECTION(0x009, 0x009, 0x001,
-			ARM_UNCACHEABLE, ARM_UNBUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW); /* IRAM */
-	X_ARM_MMU_SECTION(0x00A, 0x00A, 0x0F6,
-			ARM_UNCACHEABLE, ARM_UNBUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW); /* 246M */
-#ifndef CONFIG_MX6Q_ARM2_LPDDR2POP
-	/* 2 GB memory starting at 0x10000000, only map 1.875 GB */
-	X_ARM_MMU_SECTION(0x100, 0x100, 0x780,
-			ARM_CACHEABLE, ARM_BUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW);
-	/* uncached alias of the same 1.875 GB memory */
-	X_ARM_MMU_SECTION(0x100, 0x880, 0x780,
-			ARM_UNCACHEABLE, ARM_UNBUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW);
-#else
-	/*
-	 * Phys		Virtual		Size		Property
-	 * ----------	----------	--------	----------
-	 * 0x10000000	0x10000000	256M		cacheable
-	 * 0x80000000	0x20000000	16M		uncacheable
-	 * 0x81000000	0x21000000	240M		cacheable
-	 */
-	/* Reserve the first 256MB of bank 1 as cacheable memory */
-	X_ARM_MMU_SECTION(0x100, 0x100, 0x100,
-			ARM_CACHEABLE, ARM_BUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW);
-
-	/* Reserve the first 16MB of bank 2 uncachable memory*/
-	X_ARM_MMU_SECTION(0x800, 0x200, 0x010,
-			ARM_UNCACHEABLE, ARM_UNBUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW);
-
-	/* Reserve the remaining 240MB of bank 2 as cacheable memory */
-	X_ARM_MMU_SECTION(0x810, 0x210, 0x0F0,
-			ARM_CACHEABLE, ARM_BUFFERABLE,
-			ARM_ACCESS_PERM_RW_RW);
-#endif
-
-	/* Enable MMU */
-	MMU_ON();
-}
-#endif
-
 #ifdef CONFIG_DWC_AHSATA
 
 #define ANATOP_PLL_LOCK                 0x80000000
@@ -764,11 +690,6 @@ void setup_splash_image(void)
 
 	if (s != NULL) {
 		addr = simple_strtoul(s, NULL, 16);
-
-#if defined(CONFIG_ARCH_MMU)
-		addr = ioremap_nocache(iomem_to_phys(addr),
-				fsl_bmp_600x400_size);
-#endif
 		memcpy((char *)addr, (char *)fsl_bmp_600x400,
 				fsl_bmp_600x400_size);
 	}
@@ -803,9 +724,6 @@ int board_init(void)
 	panel_info_init();
 
 	gd->fb_base = CONFIG_FB_BASE;
-#ifdef CONFIG_ARCH_MMU
-	gd->fb_base = ioremap_nocache(iomem_to_phys(gd->fb_base), 0);
-#endif
 #endif
 
 #ifdef CONFIG_NAND_GPMI
