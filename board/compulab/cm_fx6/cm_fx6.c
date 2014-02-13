@@ -46,6 +46,7 @@
 #include <lcd.h>
 #endif
 
+#define CM_FX6_ENET_NRST	IMX_GPIO_NR(2, 8)
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -794,20 +795,10 @@ void enet_board_init(void)
 	mxc_iomux_v3_setup_multiple_pads(cm_fx6_enet_pads,
 					 ARRAY_SIZE(cm_fx6_enet_pads));
 
-	/* phy reset: gpio4-15 */
-	reg = readl(GPIO4_BASE_ADDR + 0x0);
-	reg &= ~0x8000;
-	writel(reg, GPIO4_BASE_ADDR + 0x0);
-
-	reg = readl(GPIO4_BASE_ADDR + 0x4);
-	reg |= 0x8000;
-	writel(reg, GPIO4_BASE_ADDR + 0x4);
-
+	/* phy reset */
+	gpio_direction_output(CM_FX6_ENET_NRST, 0);
 	udelay(500);
-
-	reg = readl(GPIO4_BASE_ADDR + 0x0);
-	reg |= 0x8000;
-	writel(reg, GPIO4_BASE_ADDR + 0x0);
+	gpio_set_value(CM_FX6_ENET_NRST, 1);
 }
 #endif
 
