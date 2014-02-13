@@ -764,6 +764,7 @@ static iomux_v3_cfg_t cm_fx6_enet_pads[] = {
 	MX6Q_PAD_RGMII_RX_CTL__ENET_RGMII_RX_CTL,
 	MX6Q_PAD_GPIO_0__CCM_CLKO,
 	MX6Q_PAD_GPIO_3__CCM_CLKO2,
+	(MX6Q_PAD_SD4_DAT0__GPIO_2_8 & ~MUX_PAD_CTRL_MASK)|MUX_PAD_CTRL(0x84),
 };
 #elif defined(CONFIG_MX6DL)
 static iomux_v3_cfg_t cm_fx6_enet_pads[] = {
@@ -784,26 +785,14 @@ static iomux_v3_cfg_t cm_fx6_enet_pads[] = {
 	MX6DL_PAD_RGMII_RX_CTL__ENET_RGMII_RX_CTL,
 	MX6DL_PAD_GPIO_0__CCM_CLKO,
 	MX6DL_PAD_GPIO_3__CCM_CLKO2,
+	(MX6DL_PAD_SD4_DAT0__GPIO_2_8 &	~MUX_PAD_CTRL_MASK)|MUX_PAD_CTRL(0x84),
 };
 #endif
 
 void enet_board_init(void)
 {
-	unsigned int reg;
-	iomux_v3_cfg_t enet_reset;
-#if defined CONFIG_MX6Q
-	enet_reset = (MX6Q_PAD_KEY_ROW4__GPIO_4_15 &
-			~MUX_PAD_CTRL_MASK)           |
-			 MUX_PAD_CTRL(0x84);
-#elif defined CONFIG_MX6DL
-	enet_reset = (MX6DL_PAD_KEY_ROW4__GPIO_4_15 &
-			~MUX_PAD_CTRL_MASK)           |
-			 MUX_PAD_CTRL(0x84);
-#endif
 	mxc_iomux_v3_setup_multiple_pads(cm_fx6_enet_pads,
 					 ARRAY_SIZE(cm_fx6_enet_pads));
-
-	mxc_iomux_v3_setup_pad(enet_reset);
 
 	/* phy reset: gpio4-15 */
 	reg = readl(GPIO4_BASE_ADDR + 0x0);
