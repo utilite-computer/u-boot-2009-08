@@ -436,15 +436,12 @@ static inline void cm_fx6_setup_gpmi_nand(void) {}
 #ifdef CONFIG_NET_MULTI
 int board_eth_init(bd_t *bis)
 {
-	int rc = -ENODEV;
-
-	return rc;
+	return -ENODEV;
 }
 #endif
 
 #ifdef CONFIG_CMD_MMC
-
-/* 
+/*
  * CM-FX6 does not support the 1.8V signalling.
  * Last element in struct is used to indicate 1.8V support.
  */
@@ -469,7 +466,7 @@ int get_mmc_env_devno(void)
 }
 #endif
 #if defined CONFIG_MX6Q
-iomux_v3_cfg_t usdhc1_pads[] = {
+iomux_v3_cfg_t cm_fx6_usdhc1_pads[] = {
 	MX6Q_PAD_SD1_CLK__USDHC1_CLK,
 	MX6Q_PAD_SD1_CMD__USDHC1_CMD,
 	MX6Q_PAD_SD1_DAT0__USDHC1_DAT0,
@@ -478,7 +475,7 @@ iomux_v3_cfg_t usdhc1_pads[] = {
 	MX6Q_PAD_SD1_DAT3__USDHC1_DAT3,
 };
 
-iomux_v3_cfg_t usdhc2_pads[] = {
+iomux_v3_cfg_t cm_fx6_usdhc2_pads[] = {
 	MX6Q_PAD_SD2_CLK__USDHC2_CLK,
 	MX6Q_PAD_SD2_CMD__USDHC2_CMD,
 	MX6Q_PAD_SD2_DAT0__USDHC2_DAT0,
@@ -487,7 +484,7 @@ iomux_v3_cfg_t usdhc2_pads[] = {
 	MX6Q_PAD_SD2_DAT3__USDHC2_DAT3,
 };
 
-iomux_v3_cfg_t usdhc3_pads[] = {
+iomux_v3_cfg_t cm_fx6_usdhc3_pads[] = {
 	MX6Q_PAD_SD3_CLK__USDHC3_CLK,
 	MX6Q_PAD_SD3_CMD__USDHC3_CMD,
 	MX6Q_PAD_SD3_DAT0__USDHC3_DAT0,
@@ -502,7 +499,7 @@ iomux_v3_cfg_t usdhc3_pads[] = {
 };
 
 #elif defined CONFIG_MX6DL
-iomux_v3_cfg_t usdhc1_pads[] = {
+iomux_v3_cfg_t cm_fx6_usdhc1_pads[] = {
 	MX6DL_PAD_SD1_CLK__USDHC1_CLK,
 	MX6DL_PAD_SD1_CMD__USDHC1_CMD,
 	MX6DL_PAD_SD1_DAT0__USDHC1_DAT0,
@@ -511,7 +508,7 @@ iomux_v3_cfg_t usdhc1_pads[] = {
 	MX6DL_PAD_SD1_DAT3__USDHC1_DAT3,
 };
 
-iomux_v3_cfg_t usdhc2_pads[] = {
+iomux_v3_cfg_t cm_fx6_usdhc2_pads[] = {
 	MX6DL_PAD_SD2_CLK__USDHC2_CLK,
 	MX6DL_PAD_SD2_CMD__USDHC2_CMD,
 	MX6DL_PAD_SD2_DAT0__USDHC2_DAT0,
@@ -520,7 +517,7 @@ iomux_v3_cfg_t usdhc2_pads[] = {
 	MX6DL_PAD_SD2_DAT3__USDHC2_DAT3,
 };
 
-iomux_v3_cfg_t usdhc3_pads[] = {
+iomux_v3_cfg_t cm_fx6_usdhc3_pads[] = {
 	MX6DL_PAD_SD3_CLK__USDHC3_CLK,
 	MX6DL_PAD_SD3_CMD__USDHC3_CMD,
 	MX6DL_PAD_SD3_DAT0__USDHC3_DAT0,
@@ -542,16 +539,16 @@ int usdhc_gpio_init(bd_t *bis)
 	for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM; ++index) {
 		switch (index) {
 		case 0:
-			mxc_iomux_v3_setup_multiple_pads(usdhc1_pads,
-						ARRAY_SIZE(usdhc1_pads));
+			mxc_iomux_v3_setup_multiple_pads(cm_fx6_usdhc1_pads,
+						ARRAY_SIZE(cm_fx6_usdhc1_pads));
 			break;
 		case 1:
-			mxc_iomux_v3_setup_multiple_pads(usdhc2_pads,
-						ARRAY_SIZE(usdhc2_pads));
+			mxc_iomux_v3_setup_multiple_pads(cm_fx6_usdhc2_pads,
+						ARRAY_SIZE(cm_fx6_usdhc2_pads));
 			break;
 		case 2:
-			mxc_iomux_v3_setup_multiple_pads(usdhc3_pads,
-						ARRAY_SIZE(usdhc3_pads));
+			mxc_iomux_v3_setup_multiple_pads(cm_fx6_usdhc3_pads,
+						ARRAY_SIZE(cm_fx6_usdhc3_pads));
 			break;
 		default:
 			printf("Warning: you configured more USDHC controllers"
@@ -572,7 +569,6 @@ int board_mmc_init(bd_t *bis)
 
 	return -1;
 }
-
 #endif /* CONFIG_CMD_MMC */
 
 #ifdef CONFIG_LCD
