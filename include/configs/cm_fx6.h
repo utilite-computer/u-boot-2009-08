@@ -262,11 +262,7 @@
 	#define CONFIG_MMC
 	#define CONFIG_GENERIC_MMC
 	#define CONFIG_IMX_MMC
-	#define CONFIG_SYS_FSL_USDHC_NUM	3
 	#define CONFIG_SYS_FSL_ESDHC_ADDR	0
-	#define CONFIG_SYS_MMC_ENV_DEV		2
-	/* detect whether SD1, 2, 3, or 4 is boot device */
-	#define CONFIG_DYNAMIC_MMC_DEVNO
 #endif
 
 /*

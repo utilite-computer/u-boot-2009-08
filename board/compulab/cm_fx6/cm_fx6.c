@@ -449,22 +449,8 @@ static struct fsl_esdhc_cfg cm_fx6_usdhc_cfg[] = {
 	{ USDHC1_BASE_ADDR, 1, 1, 1, 0 },
 	{ USDHC2_BASE_ADDR, 1, 1, 1, 0 },
 	{ USDHC3_BASE_ADDR, 1, 1, 1, 0 },
-	{ USDHC4_BASE_ADDR, 1, 1, 1, 0 },
 };
 
-#ifdef CONFIG_DYNAMIC_MMC_DEVNO
-int get_mmc_env_devno(void)
-{
-	uint soc_sbmr = readl(SRC_BASE_ADDR + 0x4);
-
-	if (SD_BOOT == boot_dev || MMC_BOOT == boot_dev) {
-		/* BOOT_CFG2[3] and BOOT_CFG2[4] */
-		return (soc_sbmr & 0x00001800) >> 11;
-	} else
-		return -1;
-
-}
-#endif
 #if defined CONFIG_MX6Q
 iomux_v3_cfg_t cm_fx6_usdhc1_pads[] = {
 	MX6Q_PAD_SD1_CLK__USDHC1_CLK,
@@ -531,13 +517,10 @@ iomux_v3_cfg_t cm_fx6_usdhc3_pads[] = {
 	MX6DL_PAD_GPIO_18__USDHC3_VSELECT,
 };
 #endif
-int usdhc_gpio_init(bd_t *bis)
-{
-	s32 status = 0;
-	u32 index = 0;
 
-	for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM; ++index) {
-		switch (index) {
+static void cm_fx6_usdhc_init_pads(int usdhc_num)
+{
+	switch (usdhc_num) {
 		case 0:
 			mxc_iomux_v3_setup_multiple_pads(cm_fx6_usdhc1_pads,
 						ARRAY_SIZE(cm_fx6_usdhc1_pads));
@@ -550,24 +533,32 @@ int usdhc_gpio_init(bd_t *bis)
 			mxc_iomux_v3_setup_multiple_pads(cm_fx6_usdhc3_pads,
 						ARRAY_SIZE(cm_fx6_usdhc3_pads));
 			break;
-		default:
-			printf("Warning: you configured more USDHC controllers"
-				"(%d) then supported by the board (%d)\n",
-				index+1, CONFIG_SYS_FSL_USDHC_NUM);
-			return status;
+		default:;
+	}
+}
+
+static int cm_fx6_usdhc_init(bd_t *bis)
+{
+	int i, err = 0;
+
+	for (i = 0; i < ARRAY_SIZE(cm_fx6_usdhc_cfg); ++i) {
+		cm_fx6_usdhc_init_pads(i);
+		if (fsl_esdhc_initialize(bis, &cm_fx6_usdhc_cfg[i])) {
+			printf("%s: failed initializing USDHC%d!\n",
+			       __func__, i + 1);
+			err |= (1 << i);
 		}
-		status |= fsl_esdhc_initialize(bis, &cm_fx6_usdhc_cfg[index]);
 	}
 
-	return status;
+	return err;
 }
 
 int board_mmc_init(bd_t *bis)
 {
-	if (!usdhc_gpio_init(bis))
-		return 0;
+	if (cm_fx6_usdhc_init(bis) == 0x7) /* All USDHCs failed to initialize */
+		return -1;
 
-	return -1;
+	return 0;
 }
 #endif /* CONFIG_CMD_MMC */
 
