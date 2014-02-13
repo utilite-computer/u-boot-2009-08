@@ -683,7 +683,6 @@ int board_init(void)
 }
 
 #ifdef CONFIG_ANDROID_RECOVERY
-
 int check_recovery_cmd_file(void)
 {
 	/*not realized*/
@@ -703,9 +702,11 @@ static int phy_read(char *devname, unsigned char addr, unsigned char reg,
 		    unsigned short *pdata)
 {
 	int ret = miiphy_read(devname, addr, reg, pdata);
+
 	if (ret)
 		printf("Error reading from %s PHY addr=%02x reg=%02x\n",
 		       devname, addr, reg);
+
 	return ret;
 }
 
@@ -713,9 +714,11 @@ static int phy_write(char *devname, unsigned char addr, unsigned char reg,
 		     unsigned short value)
 {
 	int ret = miiphy_write(devname, addr, reg, value);
+
 	if (ret)
-		printf("Error writing to %s PHY addr=%02x reg=%02x\n", devname,
-		       addr, reg);
+		printf("Error writing to %s PHY addr=%02x reg=%02x\n",
+		       devname, addr, reg);
+
 	return ret;
 }
 
@@ -742,8 +745,8 @@ int mx6_rgmii_rework(char *devname, int phy_addr)
 	return 0;
 }
 
-#if defined CONFIG_MX6Q
-iomux_v3_cfg_t enet_pads[] = {
+#if defined(CONFIG_MX6Q)
+static iomux_v3_cfg_t cm_fx6_enet_pads[] = {
 	MX6Q_PAD_ENET_MDIO__ENET_MDIO,
 	MX6Q_PAD_ENET_MDC__ENET_MDC,
 	MX6Q_PAD_RGMII_TXC__ENET_RGMII_TXC,
@@ -762,8 +765,8 @@ iomux_v3_cfg_t enet_pads[] = {
 	MX6Q_PAD_GPIO_0__CCM_CLKO,
 	MX6Q_PAD_GPIO_3__CCM_CLKO2,
 };
-#elif defined CONFIG_MX6DL
-iomux_v3_cfg_t enet_pads[] = {
+#elif defined(CONFIG_MX6DL)
+static iomux_v3_cfg_t cm_fx6_enet_pads[] = {
 	MX6DL_PAD_ENET_MDIO__ENET_MDIO,
 	MX6DL_PAD_ENET_MDC__ENET_MDC,
 	MX6DL_PAD_RGMII_TXC__ENET_RGMII_TXC,
@@ -797,8 +800,8 @@ void enet_board_init(void)
 			~MUX_PAD_CTRL_MASK)           |
 			 MUX_PAD_CTRL(0x84);
 #endif
-	mxc_iomux_v3_setup_multiple_pads(enet_pads,
-			ARRAY_SIZE(enet_pads));
+	mxc_iomux_v3_setup_multiple_pads(cm_fx6_enet_pads,
+					 ARRAY_SIZE(cm_fx6_enet_pads));
 
 	mxc_iomux_v3_setup_pad(enet_reset);
 
