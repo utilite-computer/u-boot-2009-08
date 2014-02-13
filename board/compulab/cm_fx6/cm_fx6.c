@@ -811,54 +811,54 @@ int checkboard(void)
 	printf("Board: CM-FX6:[ ");
 
 	switch (__REG(SRC_BASE_ADDR + 0x8)) {
-	case 0x0001:
-		printf("POR");
-		break;
-	case 0x0009:
-		printf("RST");
-		break;
-	case 0x0010:
-	case 0x0011:
-		printf("WDOG");
-		break;
-	default:
-		printf("unknown");
+		case 0x0001:
+			printf("POR");
+			break;
+		case 0x0009:
+			printf("RST");
+			break;
+		case 0x0010:
+		case 0x0011:
+			printf("WDOG");
+			break;
+		default:
+			printf("unknown");
 	}
 	printf(" ]\n");
 
 	printf("Boot Device: ");
 	switch (get_boot_device()) {
-	case WEIM_NOR_BOOT:
-		printf("NOR\n");
-		break;
-	case ONE_NAND_BOOT:
-		printf("ONE NAND\n");
-		break;
-	case PATA_BOOT:
-		printf("PATA\n");
-		break;
-	case SATA_BOOT:
-		printf("SATA\n");
-		break;
-	case I2C_BOOT:
-		printf("I2C\n");
-		break;
-	case SPI_NOR_BOOT:
-		printf("SPI NOR\n");
-		break;
-	case SD_BOOT:
-		printf("SD\n");
-		break;
-	case MMC_BOOT:
-		printf("MMC\n");
-		break;
-	case NAND_BOOT:
-		printf("NAND\n");
-		break;
-	case UNKNOWN_BOOT:
-	default:
-		printf("UNKNOWN\n");
-		break;
+		case WEIM_NOR_BOOT:
+			printf("NOR\n");
+			break;
+		case ONE_NAND_BOOT:
+			printf("ONE NAND\n");
+			break;
+		case PATA_BOOT:
+			printf("PATA\n");
+			break;
+		case SATA_BOOT:
+			printf("SATA\n");
+			break;
+		case I2C_BOOT:
+			printf("I2C\n");
+			break;
+		case SPI_NOR_BOOT:
+			printf("SPI NOR\n");
+			break;
+		case SD_BOOT:
+			printf("SD\n");
+			break;
+		case MMC_BOOT:
+			printf("MMC\n");
+			break;
+		case NAND_BOOT:
+			printf("NAND\n");
+			break;
+		case UNKNOWN_BOOT:
+		default:
+			printf("UNKNOWN\n");
+			break;
 	}
 
 #ifdef CONFIG_SECURE_BOOT
