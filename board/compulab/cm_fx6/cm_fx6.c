@@ -47,6 +47,7 @@
 #endif
 
 #define CM_FX6_ENET_NRST	IMX_GPIO_NR(2, 8)
+#define CM_FX6_GREEN_LED	IMX_GPIO_NR(2, 31)
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -804,16 +805,8 @@ void enet_board_init(void)
 
 int checkboard(void)
 {
-	u32 reg;
-
 	/* turn on the green LED */
-	reg = readl(GPIO2_BASE_ADDR + GPIO_GDIR);
-	reg |= 0x80000000;
-	writel(reg, GPIO2_BASE_ADDR + GPIO_GDIR);
-
-	reg = readl(GPIO2_BASE_ADDR + GPIO_DR);
-	reg |= 0x80000000;
-	writel(reg, GPIO2_BASE_ADDR + GPIO_DR);
+	gpio_direction_output(CM_FX6_GREEN_LED, 1);
 
 	printf("Board: CM-FX6:[ ");
 
