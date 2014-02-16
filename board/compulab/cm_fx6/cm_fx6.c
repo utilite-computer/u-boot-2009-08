@@ -23,6 +23,7 @@
 #include <common.h>
 #include <i2c.h>
 #include <mmc.h>
+#include <sata.h>
 
 #include <asm/io.h>
 #include <asm/errno.h>
@@ -189,8 +190,18 @@ static int cm_fx6_setup_sata(void)
 
 	return 0;
 }
-#else
-static inline int cm_fx6_setup_sata(void)
+
+int sata_initialize(void)
+{
+	int err = cm_fx6_setup_sata();
+
+	if (err) {
+		printf("%s: SATA init failed: %d\n", __func__, err);
+		return err;
+	}
+
+	return __sata_initialize();
+}
 #endif /* CONFIG_DWC_AHSATA */
 
 int dram_init(void)
@@ -673,7 +684,6 @@ int board_init(void)
 	gd->bd->bi_boot_params = PHYS_SDRAM_1 + 0x100;
 
 	cm_fx6_setup_uart();
-	cm_fx6_setup_sata();
 	cm_fx6_setup_gpmi_nand();
 
 #ifdef CONFIG_VIDEO_MX5
