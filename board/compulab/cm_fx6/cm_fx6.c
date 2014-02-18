@@ -47,8 +47,19 @@
 #include <lcd.h>
 #endif
 
+#define CM_FX6_SATA_PWREN	IMX_GPIO_NR(1, 28)
+#define CM_FX6_SATA_VDDC_CTRL	IMX_GPIO_NR(1, 30)
 #define CM_FX6_ENET_NRST	IMX_GPIO_NR(2, 8)
+#define CM_FX6_SATA_LDO_EN	IMX_GPIO_NR(2, 16)
 #define CM_FX6_GREEN_LED	IMX_GPIO_NR(2, 31)
+#define CM_FX6_SATA_nSTANDBY1	IMX_GPIO_NR(3, 20)
+#define CM_FX6_SATA_PHY_SLP	IMX_GPIO_NR(3, 23)
+#define CM_FX6_SATA_STBY_REQ	IMX_GPIO_NR(3, 29)
+#define CM_FX6_SATA_nSTANDBY2	IMX_GPIO_NR(5, 2)
+#define CM_FX6_SATA_nRSTDLY	IMX_GPIO_NR(6, 6)
+#define CM_FX6_SATA_PWLOSS_INT	IMX_GPIO_NR(6, 31)
+
+#define mdelay(n) ({unsigned long msec = (n); while (msec--) udelay(1000);})
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -141,10 +152,70 @@ u32 get_board_rev(void)
 #define ANATOP_PLL_HOLD_RING_OFF_MASK   0x00000800
 #define ANATOP_SATA_CLK_ENABLE_MASK     0x00100000
 
+static iomux_v3_cfg_t cm_fx6_issd_pads[] = {
+	/* SATA PWR */
+	MX6Q_PAD_ENET_TX_EN__GPIO_1_28,	/* SATA_PWREN */
+	MX6Q_PAD_EIM_A22__GPIO_2_16,	/* SATA_LDO_EN */
+	MX6Q_PAD_EIM_D20__GPIO_3_20,	/* SATA_nSTANDBY1 */
+	MX6Q_PAD_EIM_A25__GPIO_5_2,	/* SATA_nSTANDBY2 */
+	/* SATA CTRL */
+	MX6Q_PAD_ENET_TXD0__GPIO_1_30,	/* SATA_VDDC_CTRL */
+	MX6Q_PAD_EIM_D23__GPIO_3_23,	/* SATA_PHY_SLP */
+	MX6Q_PAD_EIM_D29__GPIO_3_29,	/* SATA_STBY_REQ */
+	MX6Q_PAD_EIM_A23__GPIO_6_6,	/* SATA_nRSTDLY */
+	MX6Q_PAD_EIM_BCLK__GPIO_6_31,	/* SATA_PWLOSS_INT */
+};
+
+static int cm_fx6_issd_gpios[] = {
+	/* The order of the GPIOs in the array is important! */
+	CM_FX6_SATA_PHY_SLP,
+	CM_FX6_SATA_nRSTDLY,
+	CM_FX6_SATA_PWREN,
+	CM_FX6_SATA_nSTANDBY1,
+	CM_FX6_SATA_nSTANDBY2,
+	CM_FX6_SATA_LDO_EN,
+};
+
+static void cm_fx6_sata_power(int on)
+{
+	int i;
+
+	if (!on) { /* tell the iSSD that the power will be removed */
+		gpio_set_value(CM_FX6_SATA_PWLOSS_INT, 1);
+		mdelay(10);
+	}
+
+	for (i = 0; i < ARRAY_SIZE(cm_fx6_issd_gpios); i++) {
+		gpio_set_value(cm_fx6_issd_gpios[i], on);
+		udelay(100);
+	}
+
+	if (!on) /* for compatibility lower the power loss interrupt */
+		gpio_set_value(CM_FX6_SATA_PWLOSS_INT, 0);
+}
+
+static void cm_fx6_setup_issd(void)
+{
+	int i;
+
+	mxc_iomux_v3_setup_multiple_pads(cm_fx6_issd_pads,
+					 ARRAY_SIZE(cm_fx6_issd_pads));
+
+	for (i = 0; i < ARRAY_SIZE(cm_fx6_issd_gpios); i++)
+		gpio_direction_output(cm_fx6_issd_gpios[i], 0);
+
+	gpio_direction_output(CM_FX6_SATA_PWLOSS_INT, 0);
+	udelay(100);
+
+	cm_fx6_sata_power(1);
+}
+
 static int cm_fx6_setup_sata(void)
 {
 	u32 reg = 0;
 	s32 timeout = 100000;
+
+	cm_fx6_setup_issd();
 
 	/* Enable sata clock */
 	reg = readl(CCM_BASE_ADDR + 0x7c); /* CCGR5 */
@@ -201,6 +272,12 @@ int sata_initialize(void)
 	}
 
 	return __sata_initialize();
+}
+
+void show_boot_progress(int val)
+{
+	if (val == 8) /* we are in the bootx command */
+		cm_fx6_sata_power(0);
 }
 #endif /* CONFIG_DWC_AHSATA */
 
