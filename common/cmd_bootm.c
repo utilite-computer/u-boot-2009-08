@@ -1788,12 +1788,16 @@ static int do_bootz(cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	 */
 	usb_stop();
 #endif
+	show_boot_progress(8);
 
 #ifdef CONFIG_SILENT_CONSOLE
 	fixup_silent_linux();
 #endif
 
 	do_bootm_linux(0, argc, argv, &images);
+
+	show_boot_progress(-9);
+
 #ifdef DEBUG
 	puts("\n## Control returned to monitor - resetting...\n");
 #endif
