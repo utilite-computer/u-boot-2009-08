@@ -186,7 +186,7 @@ static void cm_fx6_sata_power(int on)
 	}
 
 	for (i = 0; i < ARRAY_SIZE(cm_fx6_issd_gpios); i++) {
-		gpio_set_value(cm_fx6_issd_gpios[i], on);
+		gpio_direction_output(cm_fx6_issd_gpios[i], on);
 		udelay(100);
 	}
 
@@ -196,17 +196,15 @@ static void cm_fx6_sata_power(int on)
 
 static void cm_fx6_setup_issd(void)
 {
-	int i;
-
 	mxc_iomux_v3_setup_multiple_pads(cm_fx6_issd_pads,
 					 ARRAY_SIZE(cm_fx6_issd_pads));
-
-	for (i = 0; i < ARRAY_SIZE(cm_fx6_issd_gpios); i++)
-		gpio_direction_output(cm_fx6_issd_gpios[i], 0);
 
 	gpio_direction_output(CM_FX6_SATA_PWLOSS_INT, 0);
 	udelay(100);
 
+	/* The iSSD does not like to be reinitialized with no power cycle */
+	cm_fx6_sata_power(0);
+	mdelay(250);
 	cm_fx6_sata_power(1);
 }
 
